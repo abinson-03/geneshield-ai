@@ -1,0 +1,322 @@
+[
+  {
+    "rsid": "rs429358",
+    "gene": "APOE",
+    "chromosome": "19",
+    "risk_allele": "C",
+    "diseases": ["Alzheimer's Disease", "Cardiovascular Disease"],
+    "risk_level": "HIGH",
+    "risk_score": 85,
+    "description": "The APOE ε4 allele is the strongest genetic risk factor for late-onset Alzheimer's disease. Carriers have 3-8x increased risk.",
+    "advice": {
+      "diet": ["Mediterranean diet rich in omega-3 fatty acids", "Reduce saturated fats and red meat", "Increase consumption of leafy greens and berries", "Limit alcohol consumption"],
+      "exercise": ["Aerobic exercise 150+ minutes/week", "Strength training 2x/week to improve insulin sensitivity", "Yoga and mindfulness to reduce cortisol"],
+      "screening": ["Annual cognitive assessment after age 45", "Regular lipid panels every 6 months", "Brain MRI baseline scan recommended"],
+      "lifestyle": ["Prioritize 7-9 hours of quality sleep", "Mental stimulation through puzzles and learning", "Stress management practices"]
+    }
+  },
+  {
+    "rsid": "rs7412",
+    "gene": "APOE",
+    "chromosome": "19",
+    "risk_allele": "T",
+    "diseases": ["Alzheimer's Disease", "Hypercholesterolemia"],
+    "risk_level": "MEDIUM",
+    "risk_score": 55,
+    "description": "APOE variant affecting lipid metabolism and cardiovascular health. Associated with altered LDL cholesterol processing.",
+    "advice": {
+      "diet": ["Low-cholesterol diet", "Increase fiber intake from oats and legumes", "Omega-3 rich fish 2-3 times per week"],
+      "exercise": ["Regular cardio 30 min/day", "Maintain healthy BMI through active lifestyle"],
+      "screening": ["Annual lipid profile", "Blood pressure monitoring"],
+      "lifestyle": ["Avoid smoking", "Moderate alcohol only"]
+    }
+  },
+  {
+    "rsid": "rs1801133",
+    "gene": "MTHFR",
+    "chromosome": "1",
+    "risk_allele": "T",
+    "diseases": ["Cardiovascular Disease", "Neural Tube Defects", "Depression"],
+    "risk_level": "HIGH",
+    "risk_score": 78,
+    "description": "MTHFR C677T variant reduces enzyme activity by 30-70%, affecting folate metabolism and homocysteine levels. Linked to elevated heart disease and stroke risk.",
+    "advice": {
+      "diet": ["Increase folate from leafy greens, lentils, and fortified foods", "Take methylfolate (not folic acid) supplements", "Reduce methionine-heavy foods (red meat)", "B12-rich foods: eggs, dairy, salmon"],
+      "exercise": ["Moderate-intensity exercise to lower homocysteine", "Avoid extreme endurance training without medical supervision"],
+      "screening": ["Homocysteine blood test annually", "Vitamin B12 and folate levels", "Cardiovascular risk panel"],
+      "lifestyle": ["Avoid alcohol which depletes folate", "Manage stress to reduce inflammation"]
+    }
+  },
+  {
+    "rsid": "rs1801131",
+    "gene": "MTHFR",
+    "chromosome": "1",
+    "risk_allele": "G",
+    "diseases": ["Cardiovascular Disease", "Pregnancy Complications"],
+    "risk_level": "MEDIUM",
+    "risk_score": 52,
+    "description": "MTHFR A1298C variant mildly reduces enzyme function. Often combined with rs1801133 for compounded effects.",
+    "advice": {
+      "diet": ["Folate-rich foods", "B-vitamin complex supplementation", "Adequate hydration"],
+      "exercise": ["Regular moderate exercise"],
+      "screening": ["Annual homocysteine check", "Pre-pregnancy genetic counseling"],
+      "lifestyle": ["Prenatal vitamins with methylfolate if planning pregnancy"]
+    }
+  },
+  {
+    "rsid": "rs9939609",
+    "gene": "FTO",
+    "chromosome": "16",
+    "risk_allele": "A",
+    "diseases": ["Obesity", "Type 2 Diabetes", "Cardiovascular Disease"],
+    "risk_level": "HIGH",
+    "risk_score": 72,
+    "description": "FTO gene variant strongly associated with increased body mass index and obesity predisposition. AA homozygotes have ~3kg higher BMI on average.",
+    "advice": {
+      "diet": ["High-protein, low-glycemic diet", "Avoid processed foods and added sugars", "Intermittent fasting may be beneficial", "Portion control strategies"],
+      "exercise": ["High-intensity interval training (HIIT) is especially effective", "Daily step count target of 10,000+", "Resistance training to build muscle mass"],
+      "screening": ["Annual HbA1c glucose test", "BMI and waist circumference tracking", "Blood pressure monitoring"],
+      "lifestyle": ["Sleep 7-8 hours (poor sleep worsens FTO effects)", "Mindful eating practices", "Food diary journaling"]
+    }
+  },
+  {
+    "rsid": "rs4988235",
+    "gene": "LCT",
+    "chromosome": "2",
+    "risk_allele": "C",
+    "diseases": ["Lactose Intolerance", "Calcium Deficiency"],
+    "risk_level": "LOW",
+    "risk_score": 35,
+    "description": "LCT gene variant associated with reduced lactase enzyme persistence into adulthood, causing difficulty digesting lactose.",
+    "advice": {
+      "diet": ["Use lactase enzyme supplements with dairy", "Opt for lactose-free dairy products", "Alternative calcium sources: fortified plant milks, sardines, broccoli", "Hard cheeses and yogurt are better tolerated"],
+      "exercise": ["Weight-bearing exercise to maintain bone density"],
+      "screening": ["DEXA bone density scan if dairy is severely restricted", "Vitamin D levels annually"],
+      "lifestyle": ["Gradual dairy introduction to build tolerance", "Calcium supplement if dietary intake is insufficient"]
+    }
+  },
+  {
+    "rsid": "rs1815739",
+    "gene": "ACTN3",
+    "chromosome": "11",
+    "risk_allele": "T",
+    "diseases": ["Reduced Muscle Performance"],
+    "risk_level": "LOW",
+    "risk_score": 25,
+    "description": "ACTN3 R577X variant affects alpha-actinin-3 in fast-twitch muscle fibers. XX genotype more suited for endurance vs power sports.",
+    "advice": {
+      "diet": ["Adequate protein 1.6-2.2g/kg bodyweight", "Creatine supplementation may be beneficial"],
+      "exercise": ["Focus on endurance sports: running, cycling, swimming", "Higher rep, moderate weight training", "Excellent recovery is key"],
+      "screening": ["Physical fitness assessment annually"],
+      "lifestyle": ["Prioritize recovery and sleep for optimal muscle adaptation"]
+    }
+  },
+  {
+    "rsid": "rs1800562",
+    "gene": "HFE",
+    "chromosome": "6",
+    "risk_allele": "A",
+    "diseases": ["Hereditary Hemochromatosis", "Liver Disease"],
+    "risk_level": "HIGH",
+    "risk_score": 80,
+    "description": "HFE C282Y variant is the primary cause of hereditary hemochromatosis — excess iron accumulation that can damage the liver, heart, and joints.",
+    "advice": {
+      "diet": ["Reduce red meat consumption", "Avoid iron supplements and vitamin C with meals (enhances iron absorption)", "Tea and coffee with meals reduces iron absorption", "Avoid alcohol which damages iron-loaded liver"],
+      "exercise": ["Regular moderate exercise to help utilize stored iron"],
+      "screening": ["Annual serum ferritin and transferrin saturation", "Liver function tests", "Consider phlebotomy therapy if ferritin elevated"],
+      "lifestyle": ["Do not donate blood without informing about HH status", "Consult hematologist proactively"]
+    }
+  },
+  {
+    "rsid": "rs4244285",
+    "gene": "CYP2C19",
+    "chromosome": "10",
+    "risk_allele": "A",
+    "diseases": ["Drug Metabolism Issues", "Cardiovascular Events"],
+    "risk_level": "MEDIUM",
+    "risk_score": 60,
+    "description": "CYP2C19 *2 loss-of-function variant affects drug metabolism. Poor metabolizers have reduced clopidogrel effectiveness, increasing cardiovascular event risk.",
+    "advice": {
+      "diet": ["Avoid grapefruit which inhibits CYP2C19", "Maintain liver-friendly diet"],
+      "exercise": ["Regular cardio to support cardiovascular health"],
+      "screening": ["Pharmacogenomics panel before starting new medications", "Inform all doctors of this genetic variant"],
+      "lifestyle": ["Carry medical alert information about poor metabolizer status", "Always discuss medications with awareness of this variant"]
+    }
+  },
+  {
+    "rsid": "rs762551",
+    "gene": "CYP1A2",
+    "chromosome": "15",
+    "risk_allele": "A",
+    "diseases": ["Caffeine Sensitivity", "Cardiovascular Risk with High Coffee Intake"],
+    "risk_level": "LOW",
+    "risk_score": 30,
+    "description": "CYP1A2 variant affecting caffeine metabolism speed. Slow metabolizers have increased cardiovascular risk with high coffee intake.",
+    "advice": {
+      "diet": ["Limit coffee to 1-2 cups per day", "Avoid energy drinks", "Switch to green tea for lower caffeine with antioxidants"],
+      "exercise": ["Avoid pre-workout caffeine supplements"],
+      "screening": ["Blood pressure monitoring"],
+      "lifestyle": ["Monitor caffeine sensitivity symptoms"]
+    }
+  },
+  {
+    "rsid": "rs1800497",
+    "gene": "DRD2",
+    "chromosome": "11",
+    "risk_allele": "T",
+    "diseases": ["Addiction Susceptibility", "Depression", "ADHD"],
+    "risk_level": "MEDIUM",
+    "risk_score": 58,
+    "description": "DRD2 Taq1A variant reduces dopamine D2 receptor density, associated with reward deficiency syndrome and addiction vulnerability.",
+    "advice": {
+      "diet": ["Tyrosine-rich foods to support dopamine: eggs, chicken, almonds", "Reduce sugar and processed food dopamine spikes"],
+      "exercise": ["Exercise is the best natural dopamine booster", "Team sports for social reward stimulation"],
+      "screening": ["Mental health screening annually", "Addiction risk counseling if substance use is a concern"],
+      "lifestyle": ["Mindfulness and meditation", "Structured routine to support dopamine regulation", "Seek therapy for reward-seeking behaviors"]
+    }
+  },
+  {
+    "rsid": "rs5082",
+    "gene": "APOA2",
+    "chromosome": "1",
+    "risk_allele": "T",
+    "diseases": ["Obesity", "Cardiovascular Disease"],
+    "risk_level": "MEDIUM",
+    "risk_score": 48,
+    "description": "APOA2 variant interacts strongly with saturated fat intake to affect BMI. High saturated fat diet significantly worsens outcomes.",
+    "advice": {
+      "diet": ["Critical: Limit saturated fat < 22g/day", "Replace butter with olive oil", "Lean proteins over fatty meats"],
+      "exercise": ["Combination cardio and strength training"],
+      "screening": ["Lipid panel every 6 months"],
+      "lifestyle": ["Read food labels carefully for saturated fat content"]
+    }
+  },
+  {
+    "rsid": "rs9271366",
+    "gene": "HLA-DQA1",
+    "chromosome": "6",
+    "risk_allele": "A",
+    "diseases": ["Type 1 Diabetes", "Celiac Disease"],
+    "risk_level": "HIGH",
+    "risk_score": 75,
+    "description": "HLA region variant strongly associated with autoimmune conditions including Type 1 Diabetes and Celiac disease risk.",
+    "advice": {
+      "diet": ["Trial gluten-free diet if digestive issues present", "Anti-inflammatory Mediterranean diet", "Monitor blood glucose levels"],
+      "exercise": ["Regular moderate exercise to improve insulin sensitivity"],
+      "screening": ["HbA1c annually", "Celiac antibody tTG-IgA test", "Thyroid function test (autoimmune link)"],
+      "lifestyle": ["Reduce environmental triggers: stress, infections", "Probiotics for gut microbiome support"]
+    }
+  },
+  {
+    "rsid": "rs2075650",
+    "gene": "TOMM40",
+    "chromosome": "19",
+    "risk_allele": "G",
+    "diseases": ["Alzheimer's Disease", "Cognitive Decline"],
+    "risk_level": "HIGH",
+    "risk_score": 70,
+    "description": "TOMM40 poly-T variant affects mitochondrial protein import and age of Alzheimer's onset when combined with APOE variants.",
+    "advice": {
+      "diet": ["Ketogenic or low-carb diet to support brain energy", "Antioxidant-rich foods: blueberries, dark chocolate, green tea"],
+      "exercise": ["Aerobic exercise shown to slow neurodegeneration", "Dance-based exercise for dual motor-cognitive benefit"],
+      "screening": ["Cognitive screening starting at age 50", "PET scan baseline if family history present"],
+      "lifestyle": ["Social engagement and continued learning", "Neuroprotective sleep hygiene"]
+    }
+  },
+  {
+    "rsid": "rs3135506",
+    "gene": "APOC3",
+    "chromosome": "11",
+    "risk_allele": "G",
+    "diseases": ["Hypertriglyceridemia", "Pancreatitis"],
+    "risk_level": "MEDIUM",
+    "risk_score": 55,
+    "description": "APOC3 variant affecting triglyceride clearance. Elevated triglycerides linked to pancreatitis and cardiovascular disease.",
+    "advice": {
+      "diet": ["Severely limit alcohol", "Reduce refined carbohydrates and sugars", "Omega-3 rich foods and fish oil supplements"],
+      "exercise": ["Regular aerobic exercise lowers triglycerides significantly"],
+      "screening": ["Fasting triglyceride panel every 3 months initially"],
+      "lifestyle": ["Avoid high-fat meals", "Weight management"]
+    }
+  },
+  {
+    "rsid": "rs328",
+    "gene": "LPL",
+    "chromosome": "8",
+    "risk_allele": "G",
+    "diseases": ["Hypertriglyceridemia", "Cardiovascular Disease"],
+    "risk_level": "MEDIUM",
+    "risk_score": 50,
+    "description": "LPL S447X variant affects lipoprotein lipase activity and triglyceride metabolism.",
+    "advice": {
+      "diet": ["Low fat diet", "Complex carbohydrates over simple sugars", "Generous vegetable intake"],
+      "exercise": ["Consistent aerobic exercise is highly effective for LPL function"],
+      "screening": ["Annual lipid panel"],
+      "lifestyle": ["Healthy body weight maintenance"]
+    }
+  },
+  {
+    "rsid": "rs1800629",
+    "gene": "TNF",
+    "chromosome": "6",
+    "risk_allele": "A",
+    "diseases": ["Inflammatory Diseases", "Rheumatoid Arthritis", "Sepsis Susceptibility"],
+    "risk_level": "MEDIUM",
+    "risk_score": 62,
+    "description": "TNF-α promoter variant increases inflammatory cytokine production, linked to inflammatory and autoimmune diseases.",
+    "advice": {
+      "diet": ["Strong anti-inflammatory diet", "Turmeric/curcumin daily", "Ginger, garlic, green tea", "Eliminate processed foods"],
+      "exercise": ["Anti-inflammatory yoga and walking", "Avoid overtraining which increases TNF-α"],
+      "screening": ["CRP inflammation marker annually", "Rheumatoid factor if joint pain develops"],
+      "lifestyle": ["Stress reduction is critical", "Quality sleep reduces inflammatory markers", "Cold exposure therapy may help"]
+    }
+  },
+  {
+    "rsid": "rs4149056",
+    "gene": "SLCO1B1",
+    "chromosome": "12",
+    "risk_allele": "C",
+    "diseases": ["Statin-Induced Myopathy"],
+    "risk_level": "HIGH",
+    "risk_score": 77,
+    "description": "SLCO1B1 variant significantly increases risk of muscle pain and myopathy when taking statin cholesterol medications.",
+    "advice": {
+      "diet": ["Natural cholesterol-lowering foods: oats, nuts, plant sterols"],
+      "exercise": ["Regular exercise to manage cholesterol naturally"],
+      "screening": ["Creatine kinase if on statins", "Pharmacogenomics test before statin therapy"],
+      "lifestyle": ["Inform your doctor about this variant before any statin prescription", "Consider alternative cholesterol therapies"]
+    }
+  },
+  {
+    "rsid": "rs1042714",
+    "gene": "ADRB2",
+    "chromosome": "5",
+    "risk_allele": "G",
+    "diseases": ["Asthma", "Obesity", "Reduced Exercise Response"],
+    "risk_level": "MEDIUM",
+    "risk_score": 45,
+    "description": "Beta-2 adrenergic receptor variant affects bronchodilation response and metabolic rate during exercise.",
+    "advice": {
+      "diet": ["Anti-inflammatory diet for airway health", "Avoid food triggers: sulfites, dairy if sensitive"],
+      "exercise": ["Warm up slowly to prevent exercise-induced bronchospasm", "Swimming is excellent for respiratory fitness"],
+      "screening": ["Pulmonary function test if breathing issues", "Allergy panel"],
+      "lifestyle": ["Avoid air pollutants and smoke", "Carry rescue inhaler if prescribed"]
+    }
+  },
+  {
+    "rsid": "rs4680",
+    "gene": "COMT",
+    "chromosome": "22",
+    "risk_allele": "A",
+    "diseases": ["Anxiety", "Pain Sensitivity", "Cognitive Performance Variations"],
+    "risk_level": "LOW",
+    "risk_score": 38,
+    "description": "COMT Val158Met variant affects dopamine and norepinephrine breakdown. Met/Met variants have slower breakdown — better cognition under low stress, worse under high stress.",
+    "advice": {
+      "diet": ["Avoid excess catecholamine triggers: coffee, stimulants", "Magnesium-rich foods for stress resilience"],
+      "exercise": ["Moderate exercise optimal — avoid extreme stress sports"],
+      "screening": ["Mental health evaluation if anxiety is significant"],
+      "lifestyle": ["Stress management is paramount", "Mindfulness meditation shown to be especially effective", "Creative outlets for dopamine regulation"]
+    }
+  }
+]
