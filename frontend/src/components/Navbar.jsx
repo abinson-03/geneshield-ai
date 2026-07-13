@@ -47,12 +47,12 @@ export default function Navbar() {
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
           <div style={{
             width: 38, height: 38,
-            background: 'linear-gradient(135deg,#00d4ff,#7c3aed)',
+            background: 'linear-gradient(135deg,#00f2ff,#ff24e4)',
             borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '1.2rem', boxShadow: '0 0 20px rgba(0,212,255,0.3)'
+            fontSize: '1.2rem', boxShadow: '0 0 20px rgba(0,242,255,0.4)'
           }}>🧬</div>
-          <span style={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: '1.25rem', color: '#f0f6ff' }}>
-            Gene<span style={{ color: '#00d4ff' }}>Shield</span> AI
+          <span style={{ fontFamily: 'Space Grotesk', fontWeight: 900, fontSize: '1.25rem', color: '#e5e1e4', letterSpacing: '-0.02em' }}>
+            GENESHIELD <span style={{ color: '#00f2ff' }}>AI</span>
           </span>
         </Link>
 

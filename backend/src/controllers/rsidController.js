@@ -5,10 +5,64 @@ const { generateAIReport } = require('../services/aiService');
 const CLINVAR_DB = path.join(__dirname, '../data/clinvar_db.json');
 const readClinVar = () => JSON.parse(fs.readFileSync(CLINVAR_DB, 'utf8'));
 
+// Identify obviously fake, repeating, or sequential RSIDs typed by humans
+const isObviouslyFakeRSID = (rsid) => {
+  const numStr = rsid.toLowerCase().replace('rs', '').trim();
+  
+  // Must be only digits
+  if (!/^\d+$/.test(numStr)) return true;
+
+  // Block single/double digits that are repeating or zero (e.g., 0, 00, 1, 11)
+  if (/^0+$/.test(numStr)) return true;
+  if (numStr.length < 3 && /^1+$/.test(numStr)) return true;
+
+  // Block sequences of identical digits of length >= 4 (e.g., 1111, 22222, 55555, 444444)
+  if (numStr.length >= 4 && /^(\d)\1+$/.test(numStr)) return true;
+
+  // Block common sequential ascending/descending patterns of length >= 3 (blocks rs123, rs321, rs456)
+  const sequentialAsc = "0123456789";
+  const sequentialDesc = "9876543210";
+  if (numStr.length >= 3) {
+    if (sequentialAsc.includes(numStr) || sequentialDesc.includes(numStr)) return true;
+  }
+  
+  // Block common alternating/dummy patterns
+  const fakePatterns = [
+    '121212', '212121', '123123', '224466', '664422', '113355',
+    '123456', '654321', '12345', '54321', '1234', '4321', '123'
+  ];
+  if (fakePatterns.includes(numStr)) return true;
+
+  return false;
+};
+
+// Verify if an RSID exists in the real-world dbSNP database using Ensembl REST API
+const verifyWithEnsembl = async (rsid) => {
+  try {
+    const response = await fetch(`https://rest.ensembl.org/variation/human/${rsid}?content-type=application/json`, {
+      headers: { 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(5000) // 5 second timeout
+    });
+    if (!response.ok) {
+      if (response.status >= 400 && response.status < 500) return { valid: false, reason: 'not_found' };
+      return { valid: false, reason: 'api_error' };
+    }
+    const data = await response.json();
+    return { valid: true, data };
+  } catch (err) {
+    return { valid: false, reason: 'network_error', error: err.message };
+  }
+};
+
 // GET /api/rsid/search?q=rs429358  — search/autocomplete
 exports.searchRSID = (req, res) => {
   const q = (req.query.q || '').toLowerCase().trim();
   if (!q || q.length < 2) return res.json([]);
+
+  // If the autocomplete query matches a fake pattern, don't return suggestions
+  if (isObviouslyFakeRSID(q)) {
+    return res.json([]);
+  }
 
   const db = readClinVar();
   const matches = db.filter(r =>
@@ -28,7 +82,7 @@ exports.searchRSID = (req, res) => {
       rsid: q,
       gene: 'Unlisted Variant',
       risk_level: 'MEDIUM',
-      diseases: ['Click to resolve with AI'],
+      diseases: ['Click to verify & analyze'],
       isUnlisted: true
     });
   }
@@ -36,9 +90,25 @@ exports.searchRSID = (req, res) => {
   res.json(matches);
 };
 
-// GET /api/rsid/:rsid  — get variant details (with dynamic fallback for unlisted)
-exports.getRSID = (req, res) => {
+// GET /api/rsid/:rsid  — get variant details with real-time Ensembl dbSNP validation
+exports.getRSID = async (req, res) => {
   const rsid = req.params.rsid.toLowerCase().trim();
+  
+  if (!rsid.startsWith('rs')) {
+    return res.status(400).json({
+      error: 'Invalid RSID format.',
+      hint: 'RSIDs must start with "rs" followed by numbers (e.g. rs429358).'
+    });
+  }
+
+  // Instant block for obviously fake / sequential pattern inputs
+  if (isObviouslyFakeRSID(rsid)) {
+    return res.status(400).json({
+      error: `RSID "${req.params.rsid}" is not a valid genetic variant.`,
+      hint: 'It matches a simulated or sequential pattern (e.g. repeating digits or ascending sequences). Please enter a real RSID.'
+    });
+  }
+
   const db = readClinVar();
   const record = db.find(r => r.rsid.toLowerCase() === rsid);
 
@@ -46,23 +116,47 @@ exports.getRSID = (req, res) => {
     return res.json(record);
   }
 
-  // Realistic dynamic fallback for ANY RSID
-  if (rsid.startsWith('rs')) {
+  // Real-time verification with international dbSNP Ensembl database
+  const verification = await verifyWithEnsembl(req.params.rsid);
+  
+  if (!verification.valid) {
+    if (verification.reason === 'not_found') {
+      return res.status(404).json({
+        error: `RSID "${req.params.rsid}" is not a valid genetic variant.`,
+        hint: 'It does not exist in the official dbSNP or Ensembl databases. Please check the spelling.'
+      });
+    }
+    // Network fallback
     return res.json({
       rsid: req.params.rsid,
       gene: 'Resolving with AI...',
-      chromosome: 'Calculating...',
-      risk_allele: 'Calculating...',
-      diseases: ['Bioinformatics Lookup Required'],
+      chromosome: 'Unknown (Offline)',
+      risk_allele: 'Unknown',
+      diseases: ['Offline Lookup Required'],
       risk_level: 'MEDIUM',
       risk_score: 50,
-      description: `Variant "${req.params.rsid}" is not in our local offline catalog. Click the "Generate AI Report" button below to query the international ClinVar, dbSNP, and GWAS databases in real-time using GPT-4o.`,
-      isUnlisted: true
+      description: `We were unable to reach the Ensembl database to verify this variant online. You can still try generating the AI report, but please ensure the RSID is correct.`,
+      isUnlisted: true,
+      verifiedOffline: true
     });
   }
 
-  res.status(404).json({
-    error: `Invalid RSID format. RSIDs must start with "rs" (e.g. rs429358).`,
+  // Real variant verified! Extract exact genomic details from Ensembl
+  const data = verification.data;
+  const chromosome = data.mappings?.[0]?.seq_region_name || 'Unknown';
+  const consequence = data.most_severe_consequence || 'unknown consequence';
+
+  res.json({
+    rsid: data.name,
+    gene: 'Resolving with AI...',
+    chromosome: String(chromosome),
+    risk_allele: data.ambiguity || 'TBD',
+    diseases: ['Clinical Lookup Required'],
+    risk_level: 'MEDIUM',
+    risk_score: 50,
+    description: `Variant "${data.name}" has been verified in the Ensembl database. It is located on Chromosome ${chromosome} (consequence: ${consequence}). Click "Generate AI Report" to query ClinVar and resolve its gene and health associations.`,
+    isUnlisted: true,
+    verified: true
   });
 };
 
@@ -80,11 +174,16 @@ exports.listAll = (req, res) => {
   res.json(list);
 };
 
-// POST /api/rsid/ai-report  — generate AI report for a single RSID
+// POST /api/rsid/ai-report  — generate AI report for a single RSID with cache persistence
 exports.getAIReport = async (req, res) => {
   try {
-    const { rsid, genotype, isUnlisted } = req.body;
+    const { rsid, genotype } = req.body;
     if (!rsid) return res.status(400).json({ error: 'RSID is required' });
+
+    // Block fake inputs
+    if (isObviouslyFakeRSID(rsid)) {
+      return res.status(400).json({ error: 'Invalid RSID pattern.' });
+    }
 
     const db = readClinVar();
     let record = db.find(r => r.rsid.toLowerCase() === rsid.toLowerCase().trim());
@@ -96,7 +195,7 @@ exports.getAIReport = async (req, res) => {
     if (record) {
       variantData = { ...record, userGenotype: genotype || 'Not specified', isUnlisted: false };
     } else {
-      // Dynamic unlisted variant
+      // Unlisted but already validated
       variantData = {
         rsid,
         userGenotype: genotype || 'Not specified',
@@ -106,7 +205,7 @@ exports.getAIReport = async (req, res) => {
 
     const aiReport = await generateAIReport(variantData, userApiKey);
 
-    // If AI successfully resolved the unlisted variant, merge the resolved data back!
+    // Merge resolved details
     const responseVariant = {
       rsid: record ? record.rsid : rsid,
       gene: record ? record.gene : (aiReport.resolvedVariant?.gene || 'Unknown Gene'),
@@ -116,14 +215,24 @@ exports.getAIReport = async (req, res) => {
       risk_score: record ? record.risk_score : (aiReport.resolvedVariant?.risk_score || 50),
       diseases: record ? record.diseases : (aiReport.resolvedVariant?.diseases || ['General Risk']),
       description: record ? record.description : (aiReport.resolvedVariant?.description || 'No description resolved.'),
-      userGenotype: genotype || null,
-      isUnlisted: !record
+      advice: record ? record.advice : {
+        diet: aiReport.dietPlan || [],
+        exercise: aiReport.exercisePlan || [],
+        screening: aiReport.screeningSchedule || [],
+        lifestyle: aiReport.lifestyleChanges || []
+      }
     };
 
+    // CACHE PERSISTENCE: Save new variants permanently in JSON DB to ensure zero future variance
+    if (!record) {
+      db.push(responseVariant);
+      fs.writeFileSync(CLINVAR_DB, JSON.stringify(db, null, 2));
+    }
+
     res.json({
-      variant: responseVariant,
+      variant: { ...responseVariant, userGenotype: genotype || null, isUnlisted: !record },
       aiReport,
-      aiPowered: aiReport.source === 'openai',
+      aiPowered: ['openai', 'groq'].includes(aiReport.source),
       generatedAt: new Date().toISOString()
     });
   } catch (err) {

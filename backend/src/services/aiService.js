@@ -28,7 +28,7 @@ async function openAIReport(variant, apiKey) {
     baseURL: isGroq ? 'https://api.groq.com/openai/v1' : undefined
   });
 
-  const model = isGroq ? 'llama-3.3-70b-specdec' : 'gpt-4o-mini';
+  const model = isGroq ? 'llama-3.3-70b-versatile' : 'gpt-4o-mini';
   
   let prompt = '';
   
@@ -205,7 +205,7 @@ async function generateBulkAIReport(variants, overallRiskScore, userApiKey = nul
         baseURL: isGroq ? 'https://api.groq.com/openai/v1' : undefined
       });
 
-      const model = isGroq ? 'llama-3.3-70b-specdec' : 'gpt-4o-mini';
+      const model = isGroq ? 'llama-3.3-70b-versatile' : 'gpt-4o-mini';
       
       const variantDetails = variants.map(v => ({
         rsid: v.rsid,

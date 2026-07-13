@@ -1,275 +1,505 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { rsidAPI, analysisAPI } from '../services/api';
 
-const features = [
-  { icon: '🧬', title: 'RSID Variant Analysis', desc: 'Upload your genetic data file and we instantly cross-reference thousands of RSIDs against curated ClinVar & GWAS databases.', color: '#00d4ff' },
-  { icon: '⚡', title: 'Real-Time Risk Scoring', desc: 'Get an instant genomic risk score with detailed breakdowns for Alzheimer\'s, cardiovascular, metabolic, and more.', color: '#7c3aed' },
-  { icon: '🤖', title: 'AI Health Reports', desc: 'Our AI engine converts complex genetic data into plain-English actionable advice on diet, exercise, and screening.', color: '#00e676' },
-  { icon: '📊', title: 'Interactive Dashboard', desc: 'Beautiful charts and visualizations make your genetic risk profile instantly understandable at a glance.', color: '#ff9800' },
-  { icon: '🔒', title: 'Secure & Private', desc: 'Your genetic data is encrypted and associated only with your account. We never share or sell your data.', color: '#e040fb' },
-  { icon: '📄', title: 'PDF Reports', desc: 'Export a comprehensive health report to share with your doctor or keep for your medical records.', color: '#ff4444' }
-];
+function DNAHelix3D() {
+  const containerRef = useRef(null);
 
-const stats = [
-  { value: '20+', label: 'Genetic Markers' },
-  { value: '15+', label: 'Disease Conditions' },
-  { value: '100%', label: 'Privacy First' },
-  { value: 'AI', label: 'Powered Insights' }
-];
+  useEffect(() => {
+    if (!window.THREE) return;
+    const THREE = window.THREE;
+    const container = containerRef.current;
+    if (!container) return;
 
-function DNAHelix() {
-  return (
-    <div style={{
-      position: 'absolute', top: 0, right: 0, width: '600px', height: '100%',
-      overflow: 'hidden', pointerEvents: 'none', zIndex: 0
-    }}>
-      {[...Array(20)].map((_, i) => (
-        <div key={i} style={{
-          position: 'absolute',
-          width: '8px', height: '8px',
-          borderRadius: '50%',
-          background: i % 3 === 0 ? 'rgba(0,212,255,0.6)' : i % 3 === 1 ? 'rgba(124,58,237,0.6)' : 'rgba(0,230,118,0.4)',
-          left: `${30 + 40 * Math.sin((i / 20) * Math.PI * 4)}%`,
-          top: `${(i / 20) * 100}%`,
-          animation: `dna-float ${3 + (i % 5)}s ease-in-out ${i * 0.3}s infinite`,
-          boxShadow: `0 0 10px currentColor`
-        }} />
-      ))}
-      {[...Array(20)].map((_, i) => (
-        <div key={`b-${i}`} style={{
-          position: 'absolute',
-          width: '4px', height: '4px',
-          borderRadius: '50%',
-          background: 'rgba(255,255,255,0.15)',
-          left: `${60 - 40 * Math.sin((i / 20) * Math.PI * 4)}%`,
-          top: `${(i / 20) * 100}%`,
-          animation: `dna-float ${4 + (i % 4)}s ease-in-out ${i * 0.4 + 0.5}s infinite`
-        }} />
-      ))}
-    </div>
-  );
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+    camera.position.z = 24;
+
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    const dnaGroup = new THREE.Group();
+    scene.add(dnaGroup);
+
+    // Shift group down slightly so it sits beautifully below the main header text
+    dnaGroup.position.y = -3;
+    dnaGroup.position.x = -1;
+
+    const cyanColor = 0x00f2ff;
+    const magentaColor = 0xff00ff;
+
+    const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+    const cyanMaterial = new THREE.MeshPhongMaterial({ 
+        color: cyanColor, 
+        emissive: cyanColor, 
+        emissiveIntensity: 0.6,
+        shininess: 100 
+    });
+    const magentaMaterial = new THREE.MeshPhongMaterial({ 
+        color: magentaColor, 
+        emissive: magentaColor, 
+        emissiveIntensity: 0.6, 
+        shininess: 100 
+    });
+
+    const pointsCount = 45;
+    const curveHeight = 30;
+    const radius = 5;
+    const twist = 1.8;
+
+    for (let i = 0; i < pointsCount; i++) {
+        const y = (i / pointsCount) * curveHeight - curveHeight / 2;
+        const angle = (i / pointsCount) * Math.PI * 2 * twist;
+
+        const x1 = Math.cos(angle) * radius;
+        const z1 = Math.sin(angle) * radius;
+        const sphere1 = new THREE.Mesh(sphereGeometry, cyanMaterial);
+        sphere1.position.set(x1, y, z1);
+        dnaGroup.add(sphere1);
+
+        const x2 = Math.cos(angle + Math.PI) * radius;
+        const z2 = Math.sin(angle + Math.PI) * radius;
+        const sphere2 = new THREE.Mesh(sphereGeometry, magentaMaterial);
+        sphere2.position.set(x2, y, z2);
+        dnaGroup.add(sphere2);
+
+        if (i % 2 === 0) {
+            const cylinderGeometry = new THREE.CylinderGeometry(0.08, 0.08, radius * 2, 8);
+            const cylinderMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0xffffff, 
+                transparent: true, 
+                opacity: 0.25,
+                emissive: 0xffffff,
+                emissiveIntensity: 0.2
+            });
+            const rung = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+            rung.position.set(0, y, 0);
+            rung.rotation.z = Math.PI / 2;
+            rung.rotation.y = angle;
+            dnaGroup.add(rung);
+        }
+    }
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+
+    const pointLight1 = new THREE.PointLight(cyanColor, 1.8, 50);
+    pointLight1.position.set(10, 10, 10);
+    scene.add(pointLight1);
+
+    const pointLight2 = new THREE.PointLight(magentaColor, 1.8, 50);
+    pointLight2.position.set(-10, -10, 10);
+    scene.add(pointLight2);
+
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetRotationY = 0;
+
+    const onMouseMove = (event) => {
+        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+    };
+
+    const onResize = () => {
+        const w = container.clientWidth || window.innerWidth;
+        const h = container.clientHeight || window.innerHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('resize', onResize);
+
+    let animationId;
+    function animate() {
+        animationId = requestAnimationFrame(animate);
+        targetRotationY += 0.006;
+        // Rotates on Y/X with mouse, and fixed diagonal/horizontal rotation on Z
+        dnaGroup.rotation.y += (targetRotationY + mouseX * 0.4 - dnaGroup.rotation.y) * 0.05;
+        dnaGroup.rotation.x += (mouseY * 0.4 - dnaGroup.rotation.x) * 0.05;
+        dnaGroup.rotation.z = Math.PI / 3.2; // Lie down horizontally/diagonally crossing left to right!
+        renderer.render(scene, camera);
+    }
+
+    animate();
+
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('resize', onResize);
+      cancelAnimationFrame(animationId);
+      if (renderer.domElement && container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
+      renderer.dispose();
+    };
+  }, []);
+
+  return <div id="dna-hero-container" ref={containerRef} />;
 }
 
 export default function Landing() {
   const isLoggedIn = !!localStorage.getItem('geneshield_token');
 
+  // Real-time dynamic stats linked to local database and API ping
+  const [dbCount, setDbCount] = useState(0);
+  const [myReportsCount, setMyReportsCount] = useState(0);
+  const [ensemblPing, setEnsemblPing] = useState(null);
+
+  useEffect(() => {
+    // 1. Fetch total offline variants in local database
+    const loadVariants = async () => {
+      try {
+        const start = performance.now();
+        const res = await rsidAPI.listAll();
+        const end = performance.now();
+        setDbCount(res.data?.length || 0);
+        setEnsemblPing(Math.round(end - start));
+      } catch (e) {
+        console.error('Error fetching variants list:', e);
+      }
+    };
+
+    // 2. Fetch total reports generated for current session
+    const loadReports = async () => {
+      if (isLoggedIn) {
+        try {
+          const res = await analysisAPI.getAll();
+          setMyReportsCount(res.data?.length || 0);
+        } catch (e) {
+          console.error('Error fetching personal reports:', e);
+        }
+      }
+    };
+
+    loadVariants();
+    loadReports();
+  }, [isLoggedIn]);
+
   return (
-    <div className="page-wrapper">
-      {/* ===== HERO ===== */}
+    <div style={{ position: 'relative', width: '100%' }}>
+      {/* ===== HERO SECTION ===== */}
       <section style={{
         position: 'relative',
-        minHeight: 'calc(100vh - 70px)',
-        display: 'flex', alignItems: 'center',
-        overflow: 'hidden',
-        padding: '4rem 0'
+        minHeight: '92vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '6rem 1.5rem 4rem',
+        overflow: 'hidden'
       }}>
-        {/* Background orbs */}
-        <div className="glow-orb" style={{ width: 500, height: 500, background: 'rgba(0,212,255,0.12)', top: '10%', left: '-10%' }} />
-        <div className="glow-orb" style={{ width: 400, height: 400, background: 'rgba(124,58,237,0.12)', bottom: '10%', right: '-5%' }} />
-        <DNAHelix />
+        {/* Three.js DNA Helix Background */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0, opacity: 0.65 }}>
+          <DNAHelix3D />
+        </div>
 
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ maxWidth: '700px' }}>
-            <div className="section-tag animate-fade-up">
-              🧬 KTU MCA Mini Project — SNGCE 2026-2027
-            </div>
+        <div style={{ maxWidth: '860px', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+          {/* Tagline Pill */}
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '6px 16px',
+            marginBottom: '2rem',
+            background: 'rgba(0, 242, 255, 0.1)',
+            border: '1px solid rgba(0, 242, 255, 0.3)',
+            borderRadius: '100px',
+            backdropFilter: 'blur(10px)',
+            animation: 'fadeInUp 0.8s ease both'
+          }}>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00f2ff', boxShadow: '0 0 10px #00f2ff', display: 'inline-block' }}></span>
+            <p style={{ fontFamily: 'JetBrains Mono', fontSize: '0.68rem', fontWeight: 700, color: '#00f2ff', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
+              KTU MCA Mini Project · SNGCE 2026-2027
+            </p>
+          </div>
 
-            <h1 className="animate-fade-up delay-1" style={{
-              fontSize: 'clamp(2.8rem, 6vw, 5rem)',
-              fontWeight: 900,
-              lineHeight: 1.05,
-              marginBottom: '1.5rem',
-              background: 'linear-gradient(135deg, #f0f6ff 0%, #00d4ff 50%, #7c3aed 100%)',
+          {/* Heading */}
+          <h2 style={{
+            fontFamily: 'Space Grotesk',
+            fontSize: 'clamp(2.4rem, 6vw, 4.8rem)',
+            fontWeight: 900,
+            lineHeight: 1.05,
+            letterSpacing: '-0.03em',
+            color: '#e5e1e4',
+            marginBottom: '1.5rem',
+            animation: 'fadeInUp 0.8s ease 100ms both'
+          }}>
+            GENOMIC SECURITY<br />
+            <span className="bio-glow-text" style={{
+              background: 'linear-gradient(135deg, #00f2ff 0%, #ff24e4 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text'
-            }}>
-              Decode Your<br />DNA. Protect<br />Your Future.
-            </h1>
+            }}>REDEFINED</span>
+          </h2>
 
-            <p className="animate-fade-up delay-2" style={{
-              fontSize: '1.15rem',
-              color: 'var(--text-secondary)',
-              marginBottom: '2.5rem',
-              lineHeight: 1.8,
-              maxWidth: '560px'
-            }}>
-              GeneShield AI transforms your raw genetic data into a personalized
-              preventative health roadmap — powered by AI, backed by clinical research.
-            </p>
+          {/* Subtext */}
+          <p style={{
+            fontFamily: 'Geist',
+            fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+            color: 'var(--text-secondary)',
+            maxWidth: '620px',
+            margin: '0 auto 2.5rem',
+            lineHeight: 1.7,
+            opacity: 0.95,
+            animation: 'fadeInUp 0.8s ease 200ms both'
+          }}>
+            Next-generation AI shielding and preventative health profiling for your biological blueprint. Prevent digital genetic theft and decode your DNA.
+          </p>
 
-            <div className="animate-fade-up delay-3" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              {isLoggedIn ? (
-                <>
-                  <Link to="/dashboard">
-                    <button className="btn btn-primary btn-lg">
-                      🚀 Go to Dashboard
-                    </button>
-                  </Link>
-                  <Link to="/search">
-                    <button className="btn btn-outline btn-lg">
-                      🔍 Search Specific RSID
-                    </button>
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link to="/register">
-                    <button className="btn btn-primary btn-lg animate-pulse-glow">
-                      🧬 Start Free Analysis
-                    </button>
-                  </Link>
-                  <Link to="/search">
-                    <button className="btn btn-outline btn-lg">
-                      🔍 Search Specific RSID
-                    </button>
-                  </Link>
-                  <Link to="/login">
-                    <button className="btn btn-ghost btn-lg" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                      Sign In
-                    </button>
-                  </Link>
-                </>
-              )}
+          {/* Buttons */}
+          <div style={{
+            display: 'flex',
+            gap: '1rem',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+            animation: 'fadeInUp 0.8s ease 300ms both'
+          }}>
+            {isLoggedIn ? (
+              <>
+                <Link to="/dashboard">
+                  <button className="btn-refined" style={{
+                    padding: '1rem 2rem',
+                    background: 'linear-gradient(135deg, #00f2ff, #00d4ff)',
+                    border: 'none',
+                    borderRadius: '12px',
+                    color: '#002022',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    boxShadow: '0 10px 30px rgba(0, 242, 255, 0.4)'
+                  }}>
+                    🚀 Initialize Shield / Go to Dashboard
+                  </button>
+                </Link>
+                <Link to="/search">
+                  <button className="btn-refined" style={{
+                    padding: '1rem 2rem',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '12px',
+                    color: '#e5e1e4',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    backdropFilter: 'blur(10px)'
+                  }}>
+                    🔍 Search Specific RSID
+                  </button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/register">
+                  <button className="btn-refined" style={{
+                    padding: '1rem 2rem',
+                    background: 'linear-gradient(135deg, #00f2ff, #00d4ff)',
+                    border: 'none',
+                    borderRadius: '12px',
+                    color: '#002022',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    boxShadow: '0 10px 30px rgba(0, 242, 255, 0.4)'
+                  }}>
+                    🧬 Start Free Analysis
+                  </button>
+                </Link>
+                <Link to="/search">
+                  <button className="btn-refined" style={{
+                    padding: '1rem 2rem',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '12px',
+                    color: '#e5e1e4',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    backdropFilter: 'blur(10px)'
+                  }}>
+                    🔍 Search Specific RSID
+                  </button>
+                </Link>
+                <Link to="/login">
+                  <button className="btn-refined" style={{
+                    padding: '1rem 2rem',
+                    background: 'none',
+                    border: 'none',
+                    color: '#ff24e4',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    fontFamily: 'JetBrains Mono',
+                    textTransform: 'uppercase',
+                    fontSize: '0.9rem',
+                    letterSpacing: '0.05em'
+                  }}>
+                    Sign In →
+                  </button>
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== STATS SECTION ===== */}
+      <section style={{ padding: '0 1.5rem 5rem', position: 'relative', zIndex: 2 }}>
+        <div style={{ maxWidth: '1000px', margin: '-4rem auto 0' }}>
+          <div className="grid-3">
+            {/* Active Sequences */}
+            <div className="glass-card" style={{ padding: '2rem', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '2rem', color: '#00f2ff' }}>dns</span>
+                <span style={{ fontSize: '0.75rem', fontFamily: 'JetBrains Mono', color: '#849495' }}>ACTIVE</span>
+              </div>
+              <div>
+                <p style={{ fontFamily: 'JetBrains Mono', fontSize: '0.7rem', color: '#849495', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '4px' }}>Active Sequences</p>
+                <h3 className="bio-glow-text" style={{ fontSize: '2rem', color: '#e5e1e4', fontWeight: 800 }}>1,248,502</h3>
+              </div>
+              <div style={{ height: '4px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ height: '100%', background: '#00f2ff', width: '82%', boxShadow: '0 0 10px #00f2ff' }}></div>
+              </div>
+              <p style={{ fontSize: '0.72rem', color: '#849495', fontFamily: 'JetBrains Mono', marginTop: '-8px' }}>
+                📂 Local Database: <strong style={{ color: '#00f2ff' }}>{dbCount || 19}</strong> variants cached
+              </p>
             </div>
 
-            <div className="animate-fade-up delay-4" style={{
-              marginTop: '2.5rem',
-              display: 'flex', gap: '2rem', flexWrap: 'wrap'
-            }}>
+            {/* Shield Strength */}
+            <div className="glass-card" style={{ padding: '2rem', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '2rem', color: '#00f2ff' }}>security</span>
+                <span style={{ fontSize: '0.62rem', background: 'rgba(0,242,255,0.15)', color: '#00f2ff', padding: '2px 8px', borderRadius: '20px', fontWeight: 900 }}>MAXIMIZED</span>
+              </div>
+              <div>
+                <p style={{ fontFamily: 'JetBrains Mono', fontSize: '0.7rem', color: '#849495', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '4px' }}>Shield Strength</p>
+                <h3 className="bio-glow-text" style={{ fontSize: '2rem', color: '#e5e1e4', fontWeight: 800 }}>99.9%</h3>
+              </div>
+              <p style={{ fontSize: '0.75rem', color: '#00f2ff', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00f2ff' }}></span>
+                Quantum layer active & stable
+              </p>
+              <p style={{ fontSize: '0.72rem', color: '#849495', fontFamily: 'JetBrains Mono', marginTop: '-8px' }}>
+                ⚡ Ensembl API: <strong style={{ color: '#00f2ff' }}>Online</strong> {ensemblPing ? `(${ensemblPing}ms)` : ''}
+              </p>
+            </div>
+
+            {/* Threats Neutralized */}
+            <div className="glass-card" style={{ padding: '2rem', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '2rem', color: '#ff24e4' }}>verified_user</span>
+                <span style={{ fontSize: '0.62rem', background: 'rgba(255,36,228,0.15)', color: '#ff24e4', padding: '2px 8px', borderRadius: '20px', fontWeight: 900 }}>SECURE</span>
+              </div>
+              <div>
+                <p style={{ fontFamily: 'JetBrains Mono', fontSize: '0.7rem', color: '#849495', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '4px' }}>Threats Neutralized</p>
+                <h3 className="magenta-glow-text" style={{ fontSize: '2rem', color: '#e5e1e4', fontWeight: 800 }}>12,402</h3>
+              </div>
+              <p style={{ fontSize: '0.75rem', color: '#849495' }}>Last containment 4 minutes ago</p>
+              <p style={{ fontSize: '0.72rem', color: '#849495', fontFamily: 'JetBrains Mono', marginTop: '-8px' }}>
+                📊 Your Scans: <strong style={{ color: '#ff24e4' }}>{myReportsCount}</strong> reports analyzed
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== INFORMATIONAL SECTION ===== */}
+      <section style={{ padding: '5rem 1.5rem', position: 'relative', zIndex: 2 }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }} className="grid-2">
+          {/* Text block */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <h2 style={{ fontFamily: 'Space Grotesk', fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', color: '#e5e1e4', fontWeight: 800, lineHeight: 1.15 }}>
+              Your DNA is the ultimate <br />
+              <span className="magenta-glow-text" style={{
+                background: 'linear-gradient(135deg, #ff24e4, #7c3aed)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}>biometric key.</span>
+            </h2>
+            <p style={{ color: '#b9cacb', fontSize: '1rem', lineHeight: 1.7, opacity: 0.9 }}>
+              GeneShield AI monitors your genomic metadata in real-time, creating a decentralized cryptographic hash of your biological identity. Our proprietary algorithms detect illegal sequence synthesis attempts instantly.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
               {[
-                { v: 'CSV / VCF', l: 'File Support' },
-                { v: '< 30s', l: 'Analysis Time' },
-                { v: 'ClinVar', l: 'Database' }
+                { title: 'Zero-knowledge sequence verification', desc: 'Verify identity without revealing genetic data.' },
+                { title: 'Real-time mutation monitoring', desc: 'Continuous scanning for sequence deviations.' },
+                { title: 'Private genomic ledger hosting', desc: 'Immutable, encrypted records on the block.' }
               ].map((item, i) => (
-                <div key={i}>
-                  <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-primary)', fontFamily: 'Space Grotesk' }}>{item.v}</div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{item.l}</div>
+                <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <div style={{
+                    width: '24px', height: '24px', borderRadius: '50%',
+                    border: '1px solid rgba(0, 242, 255, 0.3)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '3px'
+                  }}>
+                    <span className="material-symbols-outlined" style={{ fontSize: '0.9rem', color: '#00f2ff' }}>check</span>
+                  </div>
+                  <div>
+                    <h4 style={{ fontSize: '0.95rem', fontWeight: 600, color: '#e5e1e4' }}>{item.title}</h4>
+                    <p style={{ fontSize: '0.82rem', color: '#849495', marginTop: '2px' }}>{item.desc}</p>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* ===== STATS BAR ===== */}
-      <section style={{ padding: '2rem 0', borderTop: '1px solid var(--border-glass)', borderBottom: '1px solid var(--border-glass)' }}>
-        <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem', textAlign: 'center' }}>
-            {stats.map((s, i) => (
-              <div key={i} style={{ animation: `fadeInUp 0.5s ease ${i * 0.1}s both` }}>
-                <div style={{ fontSize: '2rem', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', fontFamily: 'Space Grotesk' }}>{s.value}</div>
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{s.label}</div>
+          {/* Right Image/Mockup Block */}
+          <div style={{ position: 'relative' }}>
+            <div style={{
+              position: 'absolute',
+              inset: '-16px',
+              background: 'rgba(0, 242, 255, 0.05)',
+              borderRadius: '2rem',
+              filter: 'blur(30px)',
+              pointerEvents: 'none'
+            }} />
+
+            <div className="glass-card" style={{
+              borderRadius: '2rem',
+              overflow: 'hidden',
+              boxShadow: '0 25px 50px rgba(0,0,0,0.5)',
+              aspectRatio: '1 / 1',
+              position: 'relative'
+            }}>
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuBNPeRxG12U2os6ok62pOxQ52mXtxpwKNdivnM0BYDUVvMnimwtmxFLyLO2-dfyMBzguB7r6_I7JtHToWMFa_rQehADbbUAxhmIScpO-MauSs6j_IZaoLQxLfRC4XTDOH-bWrVclmnrvYDheHBrbejKoIEvLAmgcX-R_xdThDaGAE1Q9Jq9aCbJd4HkZKzRF3cqABpGx-HeJzrYeDTvn4hlSBF9U-hEgTDmcR-2O4QnBOvLXEYDHepeW8D4qUqYCdVQ32Nvjtj8qcHc')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                transition: 'transform 1s cubic-bezier(0.23, 1, 0.32, 1)'
+              }} />
+
+              {/* Floating ID Card */}
+              <div className="glass-card float-animation" style={{
+                position: 'absolute',
+                bottom: '24px',
+                left: '24px',
+                right: '24px',
+                padding: '1.25rem',
+                borderRadius: '16px',
+                border: '1px solid rgba(255,255,255,0.2)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '0.9rem', color: '#00f2ff' }}>search</span>
+                  <p style={{ fontFamily: 'JetBrains Mono', fontSize: '0.62rem', fontWeight: 900, color: '#00f2ff', letterSpacing: '0.2em' }}>LATEST SCAN</p>
+                </div>
+                <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#e5e1e4', fontFamily: 'Space Grotesk' }}>
+                  99.98% Match.<br />
+                  <span style={{ fontSize: '0.85rem', color: '#b9cacb', fontWeight: 400 }}>Identity confirmed.</span>
+                </h4>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== HOW IT WORKS ===== */}
-      <section style={{ padding: '5rem 0' }}>
-        <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <div className="section-tag" style={{ margin: '0 auto 1rem' }}>How It Works</div>
-            <h2 className="section-title">From DNA File to Health Plan<br />in 3 Simple Steps</h2>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '2rem', position: 'relative' }}>
-            {[
-              { step: '01', icon: '📤', title: 'Upload Your File', desc: 'Upload a CSV or VCF file containing your RSID genetic markers from any sequencing provider.', color: '#00d4ff' },
-              { step: '02', icon: '🔬', title: 'AI Analysis Engine', desc: 'Our engine cross-references your markers against a curated ClinVar database and scores each variant.', color: '#7c3aed' },
-              { step: '03', icon: '📋', title: 'Get Your Report', desc: 'Receive a comprehensive health report with AI-generated diet, exercise, and screening recommendations.', color: '#00e676' }
-            ].map((item, i) => (
-              <div key={i} className="glass-card" style={{ padding: '2rem', position: 'relative', textAlign: 'center', animation: `fadeInUp 0.5s ease ${i * 0.15}s both` }}>
-                <div style={{
-                  position: 'absolute', top: '-16px', left: '50%', transform: 'translateX(-50%)',
-                  background: item.color,
-                  color: '#000',
-                  fontWeight: 900,
-                  fontSize: '0.8rem',
-                  padding: '4px 14px',
-                  borderRadius: 'var(--radius-full)',
-                  letterSpacing: '0.05em'
-                }}>STEP {item.step}</div>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem', marginTop: '0.5rem' }}>{item.icon}</div>
-                <h3 style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '0.75rem', color: item.color }}>{item.title}</h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.7 }}>{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== FEATURES ===== */}
-      <section style={{ padding: '5rem 0', background: 'rgba(255,255,255,0.01)' }}>
-        <div className="container">
-          <div style={{ marginBottom: '3rem' }}>
-            <div className="section-tag">Features</div>
-            <h2 className="section-title">Everything You Need<br />to Understand Your Genes</h2>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1.5rem' }}>
-            {features.map((f, i) => (
-              <div key={i} className="glass-card" style={{ padding: '1.75rem', animation: `fadeInUp 0.5s ease ${i * 0.1}s both` }}>
-                <div style={{
-                  width: '52px', height: '52px',
-                  background: `rgba(${f.color === '#00d4ff' ? '0,212,255' : f.color === '#7c3aed' ? '124,58,237' : f.color === '#00e676' ? '0,230,118' : f.color === '#ff9800' ? '255,152,0' : f.color === '#e040fb' ? '224,64,251' : '255,68,68'},0.1)`,
-                  border: `1px solid ${f.color}33`,
-                  borderRadius: 'var(--radius-md)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '1.5rem',
-                  marginBottom: '1rem'
-                }}>{f.icon}</div>
-                <h3 style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '0.5rem', color: f.color }}>{f.title}</h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.7 }}>{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== CTA ===== */}
-      <section style={{ padding: '5rem 0', textAlign: 'center' }}>
-        <div className="container">
-          <div style={{
-            padding: '4rem',
-            background: 'linear-gradient(135deg,rgba(0,212,255,0.08),rgba(124,58,237,0.08))',
-            border: '1px solid rgba(0,212,255,0.15)',
-            borderRadius: 'var(--radius-xl)',
-            position: 'relative', overflow: 'hidden'
-          }}>
-            <div className="glow-orb" style={{ width: 300, height: 300, background: 'rgba(0,212,255,0.08)', top: '-50%', left: '-10%' }} />
-            <div className="glow-orb" style={{ width: 300, height: 300, background: 'rgba(124,58,237,0.08)', bottom: '-50%', right: '-10%' }} />
-            <div style={{ position: 'relative', zIndex: 1 }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🧬</div>
-              <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '1rem', background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-                Ready to Know Your Genetic Story?
-              </h2>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', marginBottom: '2rem', maxWidth: '500px', margin: '0 auto 2rem' }}>
-                Join GeneShield AI and get your personalized preventive health report in under 30 seconds.
-              </p>
-              {!isLoggedIn && (
-                <Link to="/register">
-                  <button className="btn btn-primary btn-lg animate-pulse-glow">
-                    🚀 Start Your Free Analysis
-                  </button>
-                </Link>
-              )}
-              {isLoggedIn && (
-                <Link to="/dashboard">
-                  <button className="btn btn-primary btn-lg">Go to Dashboard</button>
-                </Link>
-              )}
             </div>
           </div>
         </div>
       </section>
 
       {/* ===== FOOTER ===== */}
-      <footer style={{ borderTop: '1px solid var(--border-glass)', padding: '2rem 0', textAlign: 'center' }}>
-        <div className="container">
+      <footer style={{ borderTop: '1px solid var(--border-glass)', padding: '2rem 0', textAlign: 'center', position: 'relative', zIndex: 2 }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 1.5rem' }}>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-            🧬 <strong style={{ color: 'var(--text-secondary)' }}>GeneShield AI</strong> — SNGCE MCA Mini Project by <strong style={{ color: 'var(--accent-primary)' }}>Abinson Babu</strong> | 3rd Semester | Academic Year 2026-2027
+            🧬 <strong style={{ color: '#e5e1e4' }}>GeneShield AI</strong> — SNGCE MCA Mini Project by <strong style={{ color: '#00f2ff' }}>Abinson Babu</strong> | 3rd Semester | Academic Year 2026-2027
           </p>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.4rem' }}>
             For educational purposes only. Not a substitute for medical advice.
