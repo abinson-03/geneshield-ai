@@ -677,5 +677,51 @@
         "Get enough sleep, aiming for 7-8 hours per night, to help regulate your immune system and overall health"
       ]
     }
+  },
+  {
+    "rsid": "rs10549278",
+    "gene": "CDKN2A",
+    "chromosome": "9",
+    "risk_allele": "T",
+    "risk_level": "MEDIUM",
+    "risk_score": 42,
+    "diseases": [
+      "Melanoma",
+      "Pancreatic Cancer",
+      "Other cancers"
+    ],
+    "description": "The rs10549278 variant is a single nucleotide polymorphism (SNP) located in the CDKN2A gene, which encodes a tumor suppressor protein. This variation has been associated with an increased risk of developing certain types of cancer, including melanoma and pancreatic cancer. The risk allele T is associated with a moderate increase in cancer risk.",
+    "advice": {
+      "diet": [
+        "Eat a balanced diet rich in fruits, vegetables, and whole grains to help reduce cancer risk",
+        "Include cancer-fighting foods like berries, leafy greens, and cruciferous vegetables in your diet",
+        "Limit your intake of processed and red meats, which may increase cancer risk",
+        "Choose healthy fats like olive oil and avocado oil instead of saturated and trans fats",
+        "Stay hydrated by drinking plenty of water and limiting sugary drinks",
+        "Consider taking a daily multivitamin or supplement after consulting with your healthcare provider",
+        "Incorporate cancer-protective spices like turmeric and ginger into your meals"
+      ],
+      "exercise": [
+        "Aim for at least 150 minutes of moderate-intensity aerobic exercise or 75 minutes of vigorous-intensity aerobic exercise per week",
+        "Incorporate strength-training exercises into your routine at least two times per week",
+        "Engage in high-intensity interval training (HIIT) for added cancer-fighting benefits",
+        "Try to incorporate physical activity into your daily routine, such as taking the stairs or walking to work",
+        "Consider working with a personal trainer or fitness coach to develop a customized exercise plan"
+      ],
+      "screening": [
+        "Get a skin exam by a dermatologist every 6-12 months to monitor for melanoma",
+        "Discuss your risk factors with your healthcare provider to determine the best screening schedule for pancreatic cancer",
+        "Follow the recommended screening guidelines for other types of cancer, such as colon, breast, and cervical cancer",
+        "Get a yearly physical exam to monitor your overall health and catch any potential issues early",
+        "Consider genetic counseling to discuss your risk factors and develop a personalized screening plan"
+      ],
+      "lifestyle": [
+        "Don't smoke, as tobacco use increases cancer risk",
+        "Limit your sun exposure and use protective measures like sunscreen and clothing to reduce skin cancer risk",
+        "Maintain a healthy weight through a combination of diet and exercise",
+        "Get enough sleep, aiming for 7-9 hours per night, to help regulate stress and reduce cancer risk",
+        "Manage stress through techniques like meditation, yoga, or deep breathing exercises"
+      ]
+    }
   }
 ]
