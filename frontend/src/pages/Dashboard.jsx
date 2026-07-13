@@ -54,11 +54,28 @@ export default function Dashboard() {
             🧬 Dashboard
           </div>
           <h1 style={{ fontSize: '2rem', fontWeight: 800, color: '#f0f6ff' }}>
-            Welcome back, <span style={{ background: 'linear-gradient(135deg,#00d4ff,#7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{user.name?.split(' ')[0] || 'User'}</span> 👋
+            Welcome back, <span style={{ background: 'linear-gradient(135deg,#00f2ff,#ff24e4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{user.name?.split(' ')[0] || 'User'}</span> 👋
           </h1>
-          <p style={{ color: '#4a5568', marginTop: '0.4rem', fontSize: '0.9rem' }}>
+          <p style={{ color: '#849495', marginTop: '0.4rem', fontSize: '0.9rem' }}>
             Upload your genetic data and get AI-powered health insights
           </p>
+          {user.isAdmin && (
+            <div className="glass-card" style={{
+              marginTop: '1.25rem',
+              padding: '1rem 1.25rem',
+              background: 'rgba(255, 36, 228, 0.1) !important',
+              border: '1px solid rgba(255, 36, 228, 0.25) !important',
+              borderRadius: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px'
+            }}>
+              <span style={{ fontSize: '1.2rem' }}>⚙️</span>
+              <p style={{ fontSize: '0.85rem', color: '#b9cacb', margin: 0 }}>
+                You are logged in as an Administrator. To manage users, delete analyses, or view system-wide stats, please visit the <Link to="/admin" style={{ color: '#00f2ff', textDecoration: 'underline', fontWeight: 700 }}>Admin Panel</Link>.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Toast message */}
