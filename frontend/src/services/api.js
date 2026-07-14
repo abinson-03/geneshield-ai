@@ -1,7 +1,12 @@
 import axios from 'axios';
 
+const defaultBaseURL = import.meta.env.DEV 
+  ? 'http://localhost:5000/api' 
+  : `${window.location.origin}/api`;
+
+const baseURL = import.meta.env.VITE_API_URL || defaultBaseURL;
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL,
   timeout: 60000,
 });
 
