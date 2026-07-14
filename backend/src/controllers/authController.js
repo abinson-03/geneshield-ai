@@ -111,10 +111,40 @@ exports.login = async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
 
     const users = readUsers();
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    let user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+    // If admin is not found in stale /tmp cache, create it on the fly
+    if (!user && email.toLowerCase() === 'admin@geneshield.ai') {
+      user = {
+        id: 'admin-001',
+        name: 'Admin',
+        email: 'admin@geneshield.ai',
+        password: ADMIN_HASH,
+        isAdmin: true,
+        createdAt: '2026-07-13T00:00:00.000Z'
+      };
+    }
+
     if (!user) return res.status(401).json({ error: 'Invalid email or password' });
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    let isMatch = await bcrypt.compare(password, user.password);
+
+    // Admin fallback: if stored hash doesn't match, try comparing against the known correct hash
+    if (!isMatch && user.email.toLowerCase() === 'admin@geneshield.ai') {
+      isMatch = await bcrypt.compare(password, ADMIN_HASH);
+      if (isMatch) {
+        // Fix the hash in the database for future requests
+        user.password = ADMIN_HASH;
+        const allUsers = readUsers();
+        const idx = allUsers.findIndex(u => u.email === 'admin@geneshield.ai');
+        if (idx >= 0) {
+          allUsers[idx].password = ADMIN_HASH;
+          writeUsers(allUsers);
+        }
+        console.log('[GeneShield] Admin login: hash corrected on-the-fly during login.');
+      }
+    }
+
     if (!isMatch) return res.status(401).json({ error: 'Invalid email or password' });
 
     const token = jwt.sign(
