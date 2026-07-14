@@ -11,15 +11,15 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "backend/api/$1"
-    },
-    {
-      "source": "/((?!api|assets|.*\\.).*)",
-      "destination": "frontend/index.html"
+      "destination": {
+        "service": "backend"
+      }
     },
     {
       "source": "/(.*)",
-      "destination": "frontend/$1"
+      "destination": {
+        "service": "frontend"
+      }
     }
   ]
 }

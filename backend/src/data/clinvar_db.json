@@ -859,5 +859,37 @@
         "Consider reducing your exposure to environmental toxins, such as those found in pollution and certain chemicals, which can contribute to hair loss"
       ]
     }
+  },
+  {
+    "rsid": "rs2277213",
+    "gene": "MTHFR",
+    "chromosome": "16",
+    "risk_allele": "T",
+    "risk_level": "MEDIUM",
+    "risk_score": 52,
+    "diseases": [
+      "Hypertension",
+      "Sodium Sensitivity"
+    ],
+    "description": "Variant rs2277213 is located within the MTHFR gene on chromosome 16. Heuristics link this position to alterations in expression, which has been studied in connection with Hypertension and Sodium Sensitivity.",
+    "advice": {
+      "diet": [
+        "Increase dietary antioxidants and green vegetables",
+        "Limit processed sugars and simple carbohydrates",
+        "Ensure adequate hydration (2.5L+ daily)"
+      ],
+      "exercise": [
+        "Engage in 30 minutes of aerobic exercise 4-5 times a week",
+        "Incorporate full-body resistance training to boost insulin sensitivity"
+      ],
+      "screening": [
+        "Check baseline metabolic profiles",
+        "Monitor uric acid and lipid levels annually"
+      ],
+      "lifestyle": [
+        "Maintain consistent sleep hygiene (7.5+ hours)",
+        "Avoid environmental toxins and smoking"
+      ]
+    }
   }
 ]
