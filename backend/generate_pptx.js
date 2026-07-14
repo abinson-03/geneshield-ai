@@ -4,6 +4,11 @@ const path = require('path');
 const pptx = new pptxgen();
 pptx.layout = 'LAYOUT_16x9';
 
+// Absolute paths to generated assets
+const imageDna = "C:\\Users\\Abinson Babu\\.gemini\\antigravity\\brain\\703011ad-84b9-4bea-b6fa-5e7df54795be\\dna_neon_graphic_1784009093034.png";
+const imageShield = "C:\\Users\\Abinson Babu\\.gemini\\antigravity\\brain\\703011ad-84b9-4bea-b6fa-5e7df54795be\\cyber_protection_shield_1784009113198.png";
+const imageBiotech = "C:\\Users\\Abinson Babu\\.gemini\\antigravity\\brain\\703011ad-84b9-4bea-b6fa-5e7df54795be\\biotech_data_visualization_1784009131532.png";
+
 // Helper to define slides with deep navy background
 function createDarkSlide() {
   const slide = pptx.addSlide();
@@ -28,33 +33,47 @@ function createDarkSlide() {
 const slide1 = pptx.addSlide();
 slide1.background = { color: '020B18' };
 
-// Glowing decorative center accent
+// Glowing background orbs
 slide1.addShape(pptx.ShapeType.ellipse, {
-  x: '35%', y: '25%', w: '30%', h: '50%',
-  fill: { color: '00F2FF', transparency: 94 },
-  line: { color: '00F2FF', width: 2, transparency: 60 }
+  x: '2%', y: '10%', w: '30%', h: '50%',
+  fill: { color: '00F2FF', transparency: 96 },
+  line: { color: '00F2FF', width: 1, transparency: 85 }
 });
-slide1.addText("🧬", {
-  x: '45%', y: '30%', w: '10%', h: 0.8,
-  fontSize: 64, align: 'center'
+slide1.addShape(pptx.ShapeType.ellipse, {
+  x: '68%', y: '40%', w: '30%', h: '50%',
+  fill: { color: 'FF24E4', transparency: 96 },
+  line: { color: 'FF24E4', width: 1, transparency: 85 }
 });
 
+// Neon DNA Helix Illustration (Left side graphic)
+slide1.addImage({
+  path: imageDna,
+  x: 0.6, y: 1.5, w: 4.8, h: 4.2
+});
+
+// Title content (Right side blocks)
 slide1.addText("GENESHIELD AI", {
-  x: '10%', y: '45%', w: '80%', h: 1.0,
+  x: 5.8, y: 2.2, w: 6.8, h: 1.0,
   fontSize: 54, bold: true, color: '00F2FF',
-  align: 'center', fontFace: 'Segoe UI'
+  fontFace: 'Segoe UI'
 });
 
-slide1.addText("Genomic Security Redefined: AI-Powered Threat Analysis & Privacy", {
-  x: '10%', y: '58%', w: '80%', h: 0.8,
-  fontSize: 20, color: 'FF24E4',
-  align: 'center', fontFace: 'Segoe UI'
+slide1.addText("Genomic Security Redefined", {
+  x: 5.8, y: 3.2, w: 6.8, h: 0.6,
+  fontSize: 22, bold: true, color: 'FF24E4',
+  fontFace: 'Segoe UI'
 });
 
-slide1.addText("Presented by: Lead Systems Architect\nGeneShield AI Security Team", {
-  x: '10%', y: '75%', w: '80%', h: 0.8,
-  fontSize: 14, color: '8899AA',
-  align: 'center', fontFace: 'Segoe UI'
+slide1.addText("AI-Powered Threat Analysis & Privacy Protection for Personal DNA Assets", {
+  x: 5.8, y: 3.9, w: 6.5, h: 1.0,
+  fontSize: 15, color: '8899AA',
+  fontFace: 'Segoe UI', lineSpacing: 22
+});
+
+slide1.addText("Presented by: Lead Systems Architect", {
+  x: 5.8, y: 5.5, w: 6.0, h: 0.4,
+  fontSize: 13, color: 'FFFFFF', bold: true,
+  fontFace: 'Segoe UI'
 });
 
 
@@ -237,7 +256,7 @@ layers.forEach((l, idx) => {
 
 
 // ----------------------------------------------------
-// SLIDE 6: Hardened Account Security
+// SLIDE 6: Hardened Profile Security
 // ----------------------------------------------------
 const slide6 = createDarkSlide();
 slide6.addText("Hardened Profile Security", {
@@ -249,8 +268,9 @@ slide6.addText("Protecting user identities alongside biological data points", {
   fontSize: 16, color: 'FF24E4', fontFace: 'Segoe UI'
 });
 
+// Left Column Card (Text)
 slide6.addShape(pptx.ShapeType.roundRect, {
-  x: 0.6, y: 1.6, w: 12.0, h: 4.8,
+  x: 0.6, y: 1.6, w: 6.2, h: 4.8,
   fill: { color: '061424' },
   line: { color: 'FFFFFF', width: 1, transparency: 85 }
 });
@@ -264,9 +284,15 @@ const securityMeasures = [
 
 securityMeasures.forEach((m, idx) => {
   slide6.addText(m, {
-    x: 1.0, y: 2.0 + idx * 1.0, w: 11.2, h: 0.8,
-    fontSize: 15, color: '8899AA', fontFace: 'Segoe UI', lineSpacing: 24
+    x: 0.9, y: 1.9 + idx * 1.1, w: 5.6, h: 0.9,
+    fontSize: 13, color: '8899AA', fontFace: 'Segoe UI', lineSpacing: 20
   });
+});
+
+// Right Column: Cyber Security Shield Image
+slide6.addImage({
+  path: imageShield,
+  x: 7.2, y: 1.6, w: 5.4, h: 4.8
 });
 
 
@@ -356,14 +382,10 @@ slide8.addText("Please double-check your credentials and try again. This alert w
   x: 7.1, y: 3.2, w: 4.8, h: 0.8,
   fontSize: 12, color: 'FFAAAA', fontFace: 'Segoe UI'
 });
-slide8.addShape(pptx.ShapeType.rect, {
-  x: 11.8, y: 2.6, w: 0.5, h: 0.5,
-  fill: { color: '4B0F15' }
-});
 
 
 // ----------------------------------------------------
-// SLIDE 9: Future Roadmap
+// SLIDE 9: Future Roadmap & Visual Analytics
 // ----------------------------------------------------
 const slide9 = createDarkSlide();
 slide9.addText("Future Development Path", {
@@ -376,30 +398,36 @@ slide9.addText("Transforming personal genomics into a secure, decentralized stan
 });
 
 const roadmap = [
-  { phase: "PHASE 1 (CURRENT)", title: "Security Core", desc: "Profile edits with password verification, live OTP recoveries, and custom-styled warnings." },
-  { phase: "PHASE 2 (Q3 2026)", title: "Batch Processing", desc: "Support for raw genetics file parsing (23andMe, AncestryDNA formats) with offline parsing support." },
-  { phase: "PHASE 3 (2027)", title: "Zero-Knowledge", desc: "Integrate client-side cryptography to secure DNA reports, making analysis private even from the server host." }
+  { phase: "PHASE 1 (CURRENT)", title: "Security Core", desc: "Password verification checks, OTP recoveries, and custom toast warnings." },
+  { phase: "PHASE 2 (Q3 2026)", title: "Batch uploads", desc: "Support for raw files (23andMe, AncestryDNA formats) with offline parsing libraries." },
+  { phase: "PHASE 3 (2027)", title: "Zero-Knowledge", desc: "Client-side crypto libraries to secure reports, keeping DNA private from the host." }
 ];
 
 roadmap.forEach((r, idx) => {
-  const xOffset = 0.6 + idx * 4.0;
+  const xOffset = 0.6 + idx * 2.15;
   slide9.addShape(pptx.ShapeType.roundRect, {
-    x: xOffset, y: 1.8, w: 3.7, h: 4.5,
+    x: xOffset, y: 1.8, w: 2.0, h: 4.5,
     fill: { color: '061424' },
     line: { color: 'FF24E4', width: 1.5, transparency: 80 }
   });
   slide9.addText(r.phase, {
-    x: xOffset + 0.2, y: 2.1, w: 3.3, h: 0.4,
-    fontSize: 12, bold: true, color: 'FF24E4', fontFace: 'Segoe UI'
+    x: xOffset + 0.1, y: 2.0, w: 1.8, h: 0.4,
+    fontSize: 10, bold: true, color: 'FF24E4', align: 'center', fontFace: 'Segoe UI'
   });
   slide9.addText(r.title, {
-    x: xOffset + 0.2, y: 2.6, w: 3.3, h: 0.4,
-    fontSize: 15, bold: true, color: '00F2FF', fontFace: 'Segoe UI'
+    x: xOffset + 0.1, y: 2.5, w: 1.8, h: 0.4,
+    fontSize: 13, bold: true, color: '00F2FF', align: 'center', fontFace: 'Segoe UI'
   });
   slide9.addText(r.desc, {
-    x: xOffset + 0.2, y: 3.1, w: 3.3, h: 2.8,
-    fontSize: 12, color: '8899AA', fontFace: 'Segoe UI', lineSpacing: 20
+    x: xOffset + 0.1, y: 3.0, w: 1.8, h: 3.1,
+    fontSize: 10.5, color: '8899AA', align: 'center', fontFace: 'Segoe UI', lineSpacing: 18
   });
+});
+
+// Right side: Biotech Analytics illustration
+slide9.addImage({
+  path: imageBiotech,
+  x: 7.2, y: 1.8, w: 5.4, h: 4.5
 });
 
 
@@ -437,8 +465,8 @@ slide10.addText("Thank You! Questions?", {
   align: 'center', fontFace: 'Segoe UI'
 });
 
-// Output path
-const outputPath = path.join('C:', 'Users', 'Abinson Babu', 'Desktop', 'GeneShield_AI_Presentation.pptx');
+// Output path on Desktop
+const outputPath = path.join('C:', 'Users', 'Abinson Babu', 'Desktop', 'GeneShield_AI_Presentation_Premium.pptx');
 
 pptx.writeFile({ fileName: outputPath })
   .then(() => {
