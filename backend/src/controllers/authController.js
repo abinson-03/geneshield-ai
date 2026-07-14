@@ -23,13 +23,33 @@ const getDatabasePath = (filename) => {
     finalPath = tmpPath;
   }
 
-  // Database Self-Healing: Force the admin user password to match the documentation hash
+  // Database Self-Healing: Force/Restore the admin user to match documentation
   if (filename === 'users.json') {
     try {
-      const data = JSON.parse(fs.readFileSync(finalPath, 'utf8'));
-      const admin = data.find(u => u.email === 'admin@geneshield.ai');
+      let data = [];
+      try {
+        data = JSON.parse(fs.readFileSync(finalPath, 'utf8'));
+        if (!Array.isArray(data)) data = [];
+      } catch (err) {
+        data = [];
+      }
+
+      let admin = data.find(u => u.email === 'admin@geneshield.ai');
       const correctHash = '$2a$10$CUqIJffJ4Nh4q/eVjcBwRuz8bqAyQFG2QAQCGwvgYHpTCuVCvxWQO';
-      if (admin && admin.password !== correctHash) {
+
+      if (!admin) {
+        admin = {
+          id: 'admin-001',
+          name: 'Admin',
+          email: 'admin@geneshield.ai',
+          password: correctHash,
+          isAdmin: true,
+          createdAt: new Date().toISOString()
+        };
+        data.push(admin);
+        fs.writeFileSync(finalPath, JSON.stringify(data, null, 2));
+        console.log('🔑 Admin account missing! Re-created and restored successfully.');
+      } else if (admin.password !== correctHash) {
         admin.password = correctHash;
         fs.writeFileSync(finalPath, JSON.stringify(data, null, 2));
         console.log('🔑 Admin password hash successfully healed/updated.');
