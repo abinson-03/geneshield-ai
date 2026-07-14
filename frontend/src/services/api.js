@@ -43,6 +43,7 @@ export const analysisAPI = {
     headers: { 'Content-Type': 'multipart/form-data' },
     timeout: 120000,
   }),
+  sync: (backupAnalyses) => API.post('/analysis/sync', { backupAnalyses }),
   getAll: () => API.get('/analysis'),
   getById: (id) => API.get(`/analysis/${id}`),
   delete: (id) => API.delete(`/analysis/${id}`),

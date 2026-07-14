@@ -276,12 +276,13 @@ exports.getAIReport = async (req, res) => {
     }
 
     // Automatically save this lookup as a Dashboard Analysis report if the user is logged in
+    let analysisRecord = null;
     if (req.user) {
       const analyses = readAnalyses();
       const overallScore = responseVariant.risk_score;
       const level = responseVariant.risk_level;
       
-      const analysisRecord = {
+      analysisRecord = {
         id: uuidv4(),
         userId: req.user.id,
         fileName: `Single Locus: ${responseVariant.rsid}`,
@@ -341,7 +342,8 @@ exports.getAIReport = async (req, res) => {
       variant: { ...responseVariant, userGenotype: genotype || null, isUnlisted: !record },
       aiReport,
       aiPowered: ['openai', 'groq'].includes(aiReport.source),
-      generatedAt: new Date().toISOString()
+      generatedAt: new Date().toISOString(),
+      analysis: analysisRecord
     });
   } catch (err) {
     console.error('AI report error:', err);

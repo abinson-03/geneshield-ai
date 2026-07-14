@@ -93,6 +93,25 @@ export default function RSIDSearch() {
       if (res.data.variant) {
         setResult(res.data.variant);
       }
+
+      // Sync and backup the single locus analysis in localStorage
+      if (res.data.analysis) {
+        const user = JSON.parse(localStorage.getItem('geneshield_user') || '{}');
+        if (user.id) {
+          const localBackupKey = `geneshield_backup_analyses_${user.id}`;
+          let localBackup = [];
+          try {
+            localBackup = JSON.parse(localStorage.getItem(localBackupKey) || '[]');
+            if (!Array.isArray(localBackup)) localBackup = [];
+          } catch {
+            localBackup = [];
+          }
+          if (!localBackup.some(a => a.id === res.data.analysis.id)) {
+            localBackup.unshift(res.data.analysis);
+            localStorage.setItem(localBackupKey, JSON.stringify(localBackup));
+          }
+        }
+      }
     } catch (err) {
       setAiError(err.response?.data?.error || 'Failed to generate AI report.');
     } finally {

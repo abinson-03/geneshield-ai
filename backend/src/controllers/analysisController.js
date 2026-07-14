@@ -310,3 +310,37 @@ exports.deleteAnalysis = (req, res) => {
   writeAnalyses(analyses);
   res.json({ message: 'Analysis deleted' });
 };
+
+exports.syncAnalyses = (req, res) => {
+  try {
+    const { backupAnalyses } = req.body;
+    if (!Array.isArray(backupAnalyses)) {
+      return res.status(400).json({ error: 'Invalid backup format' });
+    }
+
+    const analyses = readAnalyses();
+    let updated = false;
+
+    for (const backup of backupAnalyses) {
+      if (backup.userId !== req.user.id) continue;
+      if (!analyses.some(a => a.id === backup.id)) {
+        analyses.push(backup);
+        updated = true;
+      }
+    }
+
+    if (updated) {
+      writeAnalyses(analyses);
+    }
+
+    const userAnalyses = analyses
+      .filter(a => a.userId === req.user.id)
+      .map(({ variants, aiSummary, diseaseRisks, ...summary }) => summary)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    res.json(userAnalyses);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Sync failed: ' + err.message });
+  }
+};

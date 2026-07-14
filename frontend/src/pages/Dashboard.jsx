@@ -19,11 +19,44 @@ export default function Dashboard() {
   useEffect(() => { fetchAnalyses(); }, []);
 
   const fetchAnalyses = async () => {
+    const localBackupKey = `geneshield_backup_analyses_${user.id}`;
+    let localBackup = [];
+    try {
+      localBackup = JSON.parse(localStorage.getItem(localBackupKey) || '[]');
+      if (!Array.isArray(localBackup)) localBackup = [];
+    } catch {
+      localBackup = [];
+    }
+
     try {
       const res = await analysisAPI.getAll();
-      setAnalyses(res.data);
-    } catch (e) { console.error(e); }
-    finally { setLoading(false); }
+      const backendAnalyses = res.data;
+
+      const missingLocally = localBackup.filter(
+        lb => !backendAnalyses.some(ba => ba.id === lb.id)
+      );
+
+      if (missingLocally.length > 0 && user.id) {
+        console.log('[GeneShield] Restoring analyses from backup...', missingLocally);
+        const syncRes = await analysisAPI.sync(localBackup);
+        setAnalyses(syncRes.data);
+        localStorage.setItem(localBackupKey, JSON.stringify(syncRes.data));
+      } else {
+        setAnalyses(backendAnalyses);
+        if (backendAnalyses.length > 0) {
+          localStorage.setItem(localBackupKey, JSON.stringify(backendAnalyses));
+        } else if (localBackup.length > 0) {
+          setAnalyses(localBackup);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      if (localBackup.length > 0) {
+        setAnalyses(localBackup);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = async (id, name) => {
@@ -31,7 +64,12 @@ export default function Dashboard() {
     setDeleting(id);
     try {
       await analysisAPI.delete(id);
-      setAnalyses(prev => prev.filter(a => a.id !== id));
+      const updated = analyses.filter(a => a.id !== id);
+      setAnalyses(updated);
+
+      const localBackupKey = `geneshield_backup_analyses_${user.id}`;
+      localStorage.setItem(localBackupKey, JSON.stringify(updated));
+
       setMsg('Analysis deleted.');
       setTimeout(() => setMsg(''), 2500);
     } catch (e) { alert('Delete failed'); }

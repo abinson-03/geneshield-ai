@@ -16,6 +16,7 @@ const upload = multer({
 });
 
 router.post('/analyze', authMiddleware, upload.single('geneticFile'), analysisController.analyzeFile);
+router.post('/sync', authMiddleware, analysisController.syncAnalyses);
 router.get('/', authMiddleware, analysisController.getUserAnalyses);
 router.get('/:id', authMiddleware, analysisController.getAnalysis);
 router.delete('/:id', authMiddleware, analysisController.deleteAnalysis);
