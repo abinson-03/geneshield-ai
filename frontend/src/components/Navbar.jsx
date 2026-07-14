@@ -148,7 +148,6 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <NavLink to="/search" active={isActive('/search')} label="🔍 Search RSID" />
               <NavLink to="/login" active={isActive('/login')} label="Login" />
               <Link to="/register" style={{ textDecoration: 'none' }}>
                 <button style={{

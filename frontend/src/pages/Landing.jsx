@@ -307,20 +307,6 @@ export default function Landing() {
                     🧬 Start Free Analysis
                   </button>
                 </Link>
-                <Link to="/search">
-                  <button className="btn-refined" style={{
-                    padding: '1rem 2rem',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.15)',
-                    borderRadius: '12px',
-                    color: '#e5e1e4',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    backdropFilter: 'blur(10px)'
-                  }}>
-                    🔍 Search Specific RSID
-                  </button>
-                </Link>
                 <Link to="/login">
                   <button className="btn-refined" style={{
                     padding: '1rem 2rem',
@@ -343,65 +329,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ===== STATS SECTION ===== */}
-      <section style={{ padding: '0 1.5rem 5rem', position: 'relative', zIndex: 2 }}>
-        <div style={{ maxWidth: '1000px', margin: '-4rem auto 0' }}>
-          <div className="grid-3">
-            {/* Active Sequences */}
-            <div className="glass-card" style={{ padding: '2rem', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '2rem', color: '#00f2ff' }}>dns</span>
-                <span style={{ fontSize: '0.75rem', fontFamily: 'JetBrains Mono', color: '#849495' }}>ACTIVE</span>
-              </div>
-              <div>
-                <p style={{ fontFamily: 'JetBrains Mono', fontSize: '0.7rem', color: '#849495', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '4px' }}>Active Sequences</p>
-                <h3 className="bio-glow-text" style={{ fontSize: '2rem', color: '#e5e1e4', fontWeight: 800 }}>1,248,502</h3>
-              </div>
-              <div style={{ height: '4px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px', overflow: 'hidden' }}>
-                <div style={{ height: '100%', background: '#00f2ff', width: '82%', boxShadow: '0 0 10px #00f2ff' }}></div>
-              </div>
-              <p style={{ fontSize: '0.72rem', color: '#849495', fontFamily: 'JetBrains Mono', marginTop: '-8px' }}>
-                📂 Local Database: <strong style={{ color: '#00f2ff' }}>{dbCount || 19}</strong> variants cached
-              </p>
-            </div>
-
-            {/* Shield Strength */}
-            <div className="glass-card" style={{ padding: '2rem', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '2rem', color: '#00f2ff' }}>security</span>
-                <span style={{ fontSize: '0.62rem', background: 'rgba(0,242,255,0.15)', color: '#00f2ff', padding: '2px 8px', borderRadius: '20px', fontWeight: 900 }}>MAXIMIZED</span>
-              </div>
-              <div>
-                <p style={{ fontFamily: 'JetBrains Mono', fontSize: '0.7rem', color: '#849495', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '4px' }}>Shield Strength</p>
-                <h3 className="bio-glow-text" style={{ fontSize: '2rem', color: '#e5e1e4', fontWeight: 800 }}>99.9%</h3>
-              </div>
-              <p style={{ fontSize: '0.75rem', color: '#00f2ff', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00f2ff' }}></span>
-                Quantum layer active & stable
-              </p>
-              <p style={{ fontSize: '0.72rem', color: '#849495', fontFamily: 'JetBrains Mono', marginTop: '-8px' }}>
-                ⚡ Ensembl API: <strong style={{ color: '#00f2ff' }}>Online</strong> {ensemblPing ? `(${ensemblPing}ms)` : ''}
-              </p>
-            </div>
-
-            {/* Threats Neutralized */}
-            <div className="glass-card" style={{ padding: '2rem', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '2rem', color: '#ff24e4' }}>verified_user</span>
-                <span style={{ fontSize: '0.62rem', background: 'rgba(255,36,228,0.15)', color: '#ff24e4', padding: '2px 8px', borderRadius: '20px', fontWeight: 900 }}>SECURE</span>
-              </div>
-              <div>
-                <p style={{ fontFamily: 'JetBrains Mono', fontSize: '0.7rem', color: '#849495', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '4px' }}>Threats Neutralized</p>
-                <h3 className="magenta-glow-text" style={{ fontSize: '2rem', color: '#e5e1e4', fontWeight: 800 }}>12,402</h3>
-              </div>
-              <p style={{ fontSize: '0.75rem', color: '#849495' }}>Last containment 4 minutes ago</p>
-              <p style={{ fontSize: '0.72rem', color: '#849495', fontFamily: 'JetBrains Mono', marginTop: '-8px' }}>
-                📊 Your Scans: <strong style={{ color: '#ff24e4' }}>{myReportsCount}</strong> reports analyzed
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ===== INFORMATIONAL SECTION ===== */}
       <section style={{ padding: '5rem 1.5rem', position: 'relative', zIndex: 2 }}>
