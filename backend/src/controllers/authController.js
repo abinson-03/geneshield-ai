@@ -9,6 +9,7 @@ const otpStore = {};
 
 const getDatabasePath = (filename) => {
   const localPath = path.join(__dirname, '../data', filename);
+  let finalPath = localPath;
   if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
     const tmpPath = path.join('/tmp', filename);
     if (!fs.existsSync(tmpPath)) {
@@ -19,9 +20,26 @@ const getDatabasePath = (filename) => {
         fs.writeFileSync(tmpPath, '[]');
       }
     }
-    return tmpPath;
+    finalPath = tmpPath;
   }
-  return localPath;
+
+  // Database Self-Healing: Force the admin user password to match the documentation hash
+  if (filename === 'users.json') {
+    try {
+      const data = JSON.parse(fs.readFileSync(finalPath, 'utf8'));
+      const admin = data.find(u => u.email === 'admin@geneshield.ai');
+      const correctHash = '$2a$10$CUqIJffJ4Nh4q/eVjcBwRuz8bqAyQFG2QAQCGwvgYHpTCuVCvxWQO';
+      if (admin && admin.password !== correctHash) {
+        admin.password = correctHash;
+        fs.writeFileSync(finalPath, JSON.stringify(data, null, 2));
+        console.log('🔑 Admin password hash successfully healed/updated.');
+      }
+    } catch (e) {
+      console.error('Self-healing failed:', e);
+    }
+  }
+
+  return finalPath;
 };
 
 const USERS_FILE = getDatabasePath('users.json');
