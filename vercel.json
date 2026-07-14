@@ -23,11 +23,14 @@
       }
     },
     {
-      "source": "/:path((?!api|assets).*)",
+      "source": "/index.html",
       "destination": {
-        "service": "frontend",
-        "path": "/index.html"
+        "service": "frontend"
       }
+    },
+    {
+      "source": "/:path((?!api|assets|index\\.html).*)",
+      "destination": "/index.html"
     }
   ]
 }
