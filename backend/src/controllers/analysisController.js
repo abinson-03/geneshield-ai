@@ -20,7 +20,7 @@ const getDatabasePath = (filename) => {
   return localPath;
 };
 
-const CLINVAR_DB = path.join(__dirname, '../data/clinvar_db.json');
+const CLINVAR_DB = getDatabasePath('clinvar_db.json');
 const ANALYSES_FILE = getDatabasePath('analyses.json');
 
 const readClinVar = () => JSON.parse(fs.readFileSync(CLINVAR_DB, 'utf8'));
