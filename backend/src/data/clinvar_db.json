@@ -723,5 +723,50 @@
         "Manage stress through techniques like meditation, yoga, or deep breathing exercises"
       ]
     }
+  },
+  {
+    "rsid": "rs4477212",
+    "gene": "Interleukin 23 Receptor (IL23R)",
+    "chromosome": "1",
+    "risk_allele": "A",
+    "risk_level": "MEDIUM",
+    "risk_score": 42,
+    "diseases": [
+      "Crohn's Disease",
+      "Ulcerative Colitis"
+    ],
+    "description": "The rs4477212 variant is associated with an increased risk of developing inflammatory bowel diseases, such as Crohn's disease and ulcerative colitis, due to its role in regulating the immune response and inflammation in the gastrointestinal tract.",
+    "advice": {
+      "diet": [
+        "Increase your intake of omega-3 fatty acids, found in fatty fish, flaxseeds, and walnuts, to help reduce inflammation",
+        "Eat a balanced diet rich in fruits, vegetables, and whole grains to provide essential nutrients and fiber",
+        "Avoid trigger foods that can exacerbate inflammation, such as spicy or high-fiber foods",
+        "Stay hydrated by drinking plenty of water and limiting sugary drinks",
+        "Consider incorporating probiotics or fermented foods, such as yogurt or kimchi, to support gut health",
+        "Limit your intake of processed and high-sugar foods that can promote inflammation",
+        "Incorporate anti-inflammatory herbs and spices, such as turmeric and ginger, into your meals"
+      ],
+      "exercise": [
+        "Engage in regular physical activity, such as brisk walking or yoga, to help reduce stress and promote overall health",
+        "Aim for at least 30 minutes of moderate-intensity exercise per day",
+        "Incorporate strength training exercises to help maintain muscle mass and support overall health",
+        "Consider high-intensity interval training (HIIT) to improve cardiovascular health and reduce inflammation",
+        "Make time for relaxation and stress-reducing activities, such as meditation or deep breathing exercises"
+      ],
+      "screening": [
+        "Schedule regular check-ups with your healthcare provider to monitor your digestive health",
+        "Undergo routine blood tests to check for signs of inflammation or nutrient deficiencies",
+        "Consider colon cancer screening, such as a colonoscopy, if you have a family history of the disease",
+        "Get tested for celiac disease or other gastrointestinal conditions if you experience persistent symptoms",
+        "Discuss your genetic risk with your healthcare provider and develop a personalized screening plan"
+      ],
+      "lifestyle": [
+        "Manage stress through relaxation techniques, such as meditation or yoga",
+        "Get enough sleep, aiming for 7-8 hours per night, to help regulate your immune system",
+        "Avoid smoking and limit your exposure to secondhand smoke",
+        "Limit your intake of alcohol and avoid binge drinking",
+        "Stay up-to-date on recommended vaccinations to prevent infections"
+      ]
+    }
   }
 ]
