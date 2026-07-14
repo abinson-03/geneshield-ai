@@ -2,7 +2,7 @@ const pptxgen = require('pptxgenjs');
 const path = require('path');
 
 const pptx = new pptxgen();
-pptx.layout = 'LAYOUT_16x9';
+pptx.layout = 'LAYOUT_WIDE';
 
 // Absolute paths to generated assets
 const imageBg = "C:\\Users\\Abinson Babu\\.gemini\\antigravity\\brain\\703011ad-84b9-4bea-b6fa-5e7df54795be\\dark_cyber_gradient_bg_1784009564894.png";
@@ -411,7 +411,7 @@ slide10.addText("Thank You! Questions?", {
 });
 
 // Output path on Desktop (Premium version)
-const outputPath = path.join('C:', 'Users', 'Abinson Babu', 'Desktop', 'GeneShield_AI_Presentation_Final.pptx');
+const outputPath = path.join('C:', 'Users', 'Abinson Babu', 'Desktop', 'GeneShield_AI_Presentation_Ultimate.pptx');
 
 pptx.writeFile({ fileName: outputPath })
   .then(() => {
