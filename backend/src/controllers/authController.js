@@ -7,7 +7,24 @@ const { v4: uuidv4 } = require('uuid');
 
 const otpStore = {};
 
-const USERS_FILE = path.join(__dirname, '../data/users.json');
+const getDatabasePath = (filename) => {
+  const localPath = path.join(__dirname, '../data', filename);
+  if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+    const tmpPath = path.join('/tmp', filename);
+    if (!fs.existsSync(tmpPath)) {
+      try {
+        const content = fs.readFileSync(localPath, 'utf8');
+        fs.writeFileSync(tmpPath, content);
+      } catch (err) {
+        fs.writeFileSync(tmpPath, '[]');
+      }
+    }
+    return tmpPath;
+  }
+  return localPath;
+};
+
+const USERS_FILE = getDatabasePath('users.json');
 const JWT_SECRET = process.env.JWT_SECRET || 'geneshield_secret_2026';
 
 const readUsers = () => {

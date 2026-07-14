@@ -194,7 +194,7 @@ export default function Landing() {
         overflow: 'hidden'
       }}>
         {/* Three.js DNA Helix Background */}
-        <div style={{ position: 'absolute', inset: 0, zIndex: 0, opacity: 0.65 }}>
+        <div className="hero-dna-bg" style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
           <DNAHelix3D />
         </div>
 

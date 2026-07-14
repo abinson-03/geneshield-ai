@@ -60,9 +60,9 @@ export default function Navbar() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
           {user ? (
             <>
-              <NavLink to="/dashboard" active={isActive('/dashboard')} label="Dashboard" />
-              <NavLink to="/search" active={isActive('/search')} label="🔍 Search RSID" />
-              {user.isAdmin && <NavLink to="/admin" active={isActive('/admin')} label="⚙ Admin" highlight />}
+              <NavLink to="/dashboard" active={isActive('/dashboard')} label={<><span>📊</span><span className="nav-text-desktop"> Dashboard</span></>} />
+              <NavLink to="/search" active={isActive('/search')} label={<><span>🔍</span><span className="nav-text-desktop"> Search RSID</span></>} />
+              {user.isAdmin && <NavLink to="/admin" active={isActive('/admin')} label={<><span>⚙</span><span className="nav-text-desktop"> Admin</span></>} highlight />}
 
               {/* User avatar + dropdown */}
               <div style={{ position: 'relative', marginLeft: '0.5rem' }}>
@@ -183,7 +183,8 @@ function NavLink({ to, label, active, highlight }) {
       color: active ? '#00d4ff' : highlight ? '#e040fb' : '#8899aa',
       background: active ? 'rgba(0,212,255,0.1)' : 'transparent',
       border: active ? '1px solid rgba(0,212,255,0.2)' : '1px solid transparent',
-      transition: 'all 0.2s'
+      transition: 'all 0.2s',
+      display: 'inline-flex', alignItems: 'center', gap: '4px'
     }}>
       {label}
     </Link>

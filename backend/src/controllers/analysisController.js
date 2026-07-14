@@ -3,8 +3,25 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { generateBulkAIReport } = require('../services/aiService');
 
+const getDatabasePath = (filename) => {
+  const localPath = path.join(__dirname, '../data', filename);
+  if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+    const tmpPath = path.join('/tmp', filename);
+    if (!fs.existsSync(tmpPath)) {
+      try {
+        const content = fs.readFileSync(localPath, 'utf8');
+        fs.writeFileSync(tmpPath, content);
+      } catch (err) {
+        fs.writeFileSync(tmpPath, '[]');
+      }
+    }
+    return tmpPath;
+  }
+  return localPath;
+};
+
 const CLINVAR_DB = path.join(__dirname, '../data/clinvar_db.json');
-const ANALYSES_FILE = path.join(__dirname, '../data/analyses.json');
+const ANALYSES_FILE = getDatabasePath('analyses.json');
 
 const readClinVar = () => JSON.parse(fs.readFileSync(CLINVAR_DB, 'utf8'));
 const readAnalyses = () => {

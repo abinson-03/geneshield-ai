@@ -625,3 +625,21 @@ a { text-decoration: none; color: inherit; }
     opacity: 1;
   }
 }
+
+/* Mobile Responsive Utility Rules */
+.hero-dna-bg {
+  opacity: 0.65;
+  transition: opacity 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .hero-dna-bg {
+    opacity: 0.22 !important; /* Dims the 3D DNA helix on mobile for maximum text visibility */
+  }
+  .nav-text-desktop {
+    display: none !important; /* Hide labels, keep only icons on mobile navbar to fit screen */
+  }
+  .navbar {
+    padding: 0 1rem !important; /* Reduce padding on mobile */
+  }
+}
