@@ -205,6 +205,7 @@ exports.forgotPassword = async (req, res) => {
       expiresAt: Date.now() + 10 * 60 * 1000 // 10 minutes expiry
     };
 
+    let emailSent = false;
     const hasSmtp = process.env.EMAIL_USER && process.env.EMAIL_PASS;
     if (hasSmtp) {
       try {
@@ -241,19 +242,18 @@ exports.forgotPassword = async (req, res) => {
 
         await transporter.sendMail(mailOptions);
         console.log(`[SMTP] Sent OTP email successfully to ${email}`);
+        emailSent = true;
       } catch (err) {
         console.error('[SMTP] Failed to send email:', err.message);
-        // Fallback log to console if SMTP sending fails
         console.log(`\n🔑 [OTP FALLBACK] Generated OTP for ${email}: ${otp}\n`);
       }
     } else {
-      // Fallback console log for local development
       console.log(`\n🔑 [OTP FALLBACK] Generated OTP for ${email}: ${otp}\n`);
     }
 
     res.json({
       message: 'OTP sent successfully',
-      devFallback: !hasSmtp ? otp : null
+      devFallback: !emailSent ? otp : null
     });
   } catch (err) {
     console.error(err);
