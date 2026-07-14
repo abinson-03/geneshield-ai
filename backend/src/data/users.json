@@ -1,0 +1,50 @@
+[
+  {
+    "id": "admin-001",
+    "name": "Admin",
+    "email": "admin@geneshield.ai",
+    "password": "$2a$10$X/cB0j/mOE4uTLEAjWvW0ekqTXmO1iIt2gaAf3n5lwOHtIGlnBTYW",
+    "isAdmin": true,
+    "createdAt": "2026-07-13T00:00:00.000Z"
+  },
+  {
+    "id": "826c76a7-3106-46b8-86c6-842f0b618bba",
+    "name": "Demo User",
+    "email": "demo@geneshield.ai",
+    "password": "$2a$10$46CVo8AgD7upQ0dsSz.pc.xe8CBCLHmrFP3HGLEidscY5pC.CkHzO",
+    "isAdmin": false,
+    "createdAt": "2026-07-13T05:32:59.248Z"
+  },
+  {
+    "id": "24078439-72a3-48ff-aab7-a0b8c991f15c",
+    "name": "ab",
+    "email": "ab@g.com",
+    "password": "$2a$10$Gxt8NwbWNnWbO.EwcDnM2e2ES17REv9vg5ali5XqJslmIIoCwE4w6",
+    "isAdmin": false,
+    "createdAt": "2026-07-13T10:07:20.919Z"
+  },
+  {
+    "id": "6b27ec43-5560-434d-a6cc-d14117dd1977",
+    "name": "aysha",
+    "email": "ay@g.com",
+    "password": "$2a$10$KfnQ21Gri5LjqrfAainZFuX5WTEmPr1Nu2XDD3ObCxWpDBar8t3c.",
+    "isAdmin": false,
+    "createdAt": "2026-07-14T03:45:34.545Z"
+  },
+  {
+    "id": "cf3068ab-eeb0-41b6-9203-8dd5e64fa5bb",
+    "name": "abin",
+    "email": "abinsoncs@gmail.com",
+    "password": "$2a$10$D6VO/Dx7XD44Xp7S18MJk.wWW.ChdxiZ5taiir5ndpX1rTrV6iqLe",
+    "isAdmin": false,
+    "createdAt": "2026-07-14T04:40:04.507Z"
+  },
+  {
+    "id": "44bc0e4b-1851-4eae-9e11-3300e5db1a7e",
+    "name": "ayshaa",
+    "email": "ayshaamna216@gmail.com",
+    "password": "$2a$10$e63hRKlJUVhebKh.cb7yhubgSsEVtdYdeGznJ9WYcW2qpknXqsrr.",
+    "isAdmin": false,
+    "createdAt": "2026-07-14T04:59:48.727Z"
+  }
+]
