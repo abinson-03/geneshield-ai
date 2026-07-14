@@ -1,9 +1,10 @@
 import { useState, useCallback, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { analysisAPI } from '../services/api';
+import { saveAnalysis, getUserId } from '../services/analysisStore';
 import { useNavigate } from 'react-router-dom';
 
-export default function FileUpload() {
+export default function FileUpload({ onAnalysisComplete }) {
   const navigate = useNavigate();
   const fileInputRef = useRef();
   const [uploading, setUploading] = useState(false);
@@ -70,6 +71,14 @@ export default function FileUpload() {
       clearInterval(msgInterval);
       setProgress(100);
       setProgressMsg('Analysis complete! Redirecting...');
+
+      // Save full analysis to localStorage for persistent storage
+      const userId = getUserId();
+      if (userId && res.data.data) {
+        saveAnalysis(userId, res.data.data);
+        if (onAnalysisComplete) onAnalysisComplete();
+      }
+
       setTimeout(() => navigate(`/report/${res.data.analysisId}`), 700);
     } catch (err) {
       clearInterval(progInterval);

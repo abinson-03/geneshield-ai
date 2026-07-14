@@ -1,59 +1,39 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import FileUpload from '../components/FileUpload';
-import { analysisAPI } from '../services/api';
+import { getAllAnalyses, getUserId, deleteAnalysis } from '../services/analysisStore';
 
 const getRiskColor = (s) => s >= 70 ? '#ff6b6b' : s >= 45 ? '#ffb74d' : '#69f0ae';
 const getRiskLabel = (s) => s >= 70 ? 'High' : s >= 45 ? 'Moderate' : 'Low';
-const getRiskClass = (s) => s >= 70 ? 'high' : s >= 45 ? 'medium' : 'low';
-const formatDate = (iso) => new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+const formatDate = (iso) => {
+  try {
+    return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  } catch { return iso || ''; }
+};
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('geneshield_user') || '{}');
+  const userId = getUserId();
   const [analyses, setAnalyses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(null);
   const [msg, setMsg] = useState('');
 
-  useEffect(() => { fetchAnalyses(); }, []);
+  useEffect(() => {
+    loadAnalyses();
+    // Re-load analyses whenever user navigates back to dashboard (e.g., after generating a report)
+    const handleFocus = () => loadAnalyses();
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, []);
 
-  const fetchAnalyses = async () => {
-    const localBackupKey = `geneshield_backup_analyses_${user.id}`;
-    let localBackup = [];
+  const loadAnalyses = () => {
     try {
-      localBackup = JSON.parse(localStorage.getItem(localBackupKey) || '[]');
-      if (!Array.isArray(localBackup)) localBackup = [];
-    } catch {
-      localBackup = [];
-    }
-
-    try {
-      const res = await analysisAPI.getAll();
-      const backendAnalyses = res.data;
-
-      const missingLocally = localBackup.filter(
-        lb => !backendAnalyses.some(ba => ba.id === lb.id)
-      );
-
-      if (missingLocally.length > 0 && user.id) {
-        console.log('[GeneShield] Restoring analyses from backup...', missingLocally);
-        const syncRes = await analysisAPI.sync(localBackup);
-        setAnalyses(syncRes.data);
-        localStorage.setItem(localBackupKey, JSON.stringify(syncRes.data));
-      } else {
-        setAnalyses(backendAnalyses);
-        if (backendAnalyses.length > 0) {
-          localStorage.setItem(localBackupKey, JSON.stringify(backendAnalyses));
-        } else if (localBackup.length > 0) {
-          setAnalyses(localBackup);
-        }
-      }
+      const data = getAllAnalyses(userId);
+      setAnalyses(data);
     } catch (e) {
       console.error(e);
-      if (localBackup.length > 0) {
-        setAnalyses(localBackup);
-      }
     } finally {
       setLoading(false);
     }
@@ -63,17 +43,15 @@ export default function Dashboard() {
     if (!window.confirm(`Delete analysis "${name}"?`)) return;
     setDeleting(id);
     try {
-      await analysisAPI.delete(id);
-      const updated = analyses.filter(a => a.id !== id);
-      setAnalyses(updated);
-
-      const localBackupKey = `geneshield_backup_analyses_${user.id}`;
-      localStorage.setItem(localBackupKey, JSON.stringify(updated));
-
+      const updated = deleteAnalysis(userId, id);
+      setAnalyses(updated || analyses.filter(a => a.id !== id));
       setMsg('Analysis deleted.');
       setTimeout(() => setMsg(''), 2500);
-    } catch (e) { alert('Delete failed'); }
-    finally { setDeleting(null); }
+    } catch (e) {
+      alert('Delete failed');
+    } finally {
+      setDeleting(null);
+    }
   };
 
   const totalHigh = analyses.reduce((a, r) => a + (r.riskBreakdown?.high || 0), 0);
@@ -99,24 +77,19 @@ export default function Dashboard() {
           </p>
           {user.isAdmin && (
             <div className="glass-card" style={{
-              marginTop: '1.25rem',
-              padding: '1rem 1.25rem',
-              background: 'rgba(255, 36, 228, 0.1) !important',
-              border: '1px solid rgba(255, 36, 228, 0.25) !important',
-              borderRadius: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px'
+              marginTop: '1.25rem', padding: '1rem 1.25rem',
+              border: '1px solid rgba(255,36,228,0.25)', borderRadius: '12px',
+              display: 'flex', alignItems: 'center', gap: '12px'
             }}>
               <span style={{ fontSize: '1.2rem' }}>⚙️</span>
               <p style={{ fontSize: '0.85rem', color: '#b9cacb', margin: 0 }}>
-                You are logged in as an Administrator. To manage users, delete analyses, or view system-wide stats, please visit the <Link to="/admin" style={{ color: '#00f2ff', textDecoration: 'underline', fontWeight: 700 }}>Admin Panel</Link>.
+                You are logged in as an Administrator. Visit the <Link to="/admin" style={{ color: '#00f2ff', textDecoration: 'underline', fontWeight: 700 }}>Admin Panel</Link> to manage users.
               </p>
             </div>
           )}
         </div>
 
-        {/* Toast message */}
+        {/* Toast */}
         {msg && (
           <div style={{ padding: '0.75rem 1rem', background: 'rgba(0,230,118,0.1)', border: '1px solid rgba(0,230,118,0.25)', borderRadius: '10px', color: '#69f0ae', fontSize: '0.88rem', marginBottom: '1rem' }}>
             ✅ {msg}
@@ -133,8 +106,7 @@ export default function Dashboard() {
           ].map((s, i) => (
             <div key={i} style={{
               background: 'rgba(6,20,36,0.85)', border: '1px solid rgba(255,255,255,0.07)',
-              borderRadius: '16px', padding: '1.5rem',
-              transition: 'all 0.3s',
+              borderRadius: '16px', padding: '1.5rem', transition: 'all 0.3s',
               animation: `fadeInUp 0.4s ease ${i * 0.08}s both`
             }}
               onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.borderColor = `${s.color}40`; }}
@@ -152,14 +124,13 @@ export default function Dashboard() {
 
           {/* Upload panel */}
           <div style={{ animation: 'fadeInUp 0.5s ease 0.2s both' }}>
-            <FileUpload />
+            <FileUpload onAnalysisComplete={loadAnalyses} />
           </div>
 
           {/* Analysis History */}
           <div style={{
             background: 'rgba(6,20,36,0.85)', border: '1px solid rgba(255,255,255,0.07)',
-            borderRadius: '20px', overflow: 'hidden',
-            animation: 'fadeInUp 0.5s ease 0.3s both'
+            borderRadius: '20px', overflow: 'hidden', animation: 'fadeInUp 0.5s ease 0.3s both'
           }}>
             <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <h2 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f0f6ff' }}>📋 Analysis History</h2>

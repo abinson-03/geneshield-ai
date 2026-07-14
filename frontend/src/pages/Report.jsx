@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { analysisAPI } from '../services/api';
+import { getAnalysisById, getUserId } from '../services/analysisStore';
 import { RiskDonutChart, DiseaseRiskBarChart, RiskBreakdownChart } from '../components/Charts';
 import VariantTable from '../components/VariantTable';
 import AIReport from '../components/AIReport';
@@ -20,11 +21,22 @@ export default function Report() {
   }, [id]);
 
   const fetchReport = async () => {
+    const userId = getUserId();
+
+    // 1. Try localStorage first (always reliable, no Vercel /tmp issues)
+    const local = getAnalysisById(userId, id);
+    if (local) {
+      setData(local);
+      setLoading(false);
+      return;
+    }
+
+    // 2. Fallback to backend (in case user is on new device / cleared storage)
     try {
       const res = await analysisAPI.getById(id);
       setData(res.data);
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to load report');
+      setError('Report not found. It may have been deleted or not saved yet.');
     } finally {
       setLoading(false);
     }
@@ -46,7 +58,7 @@ export default function Report() {
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`GeneShield_Report_${data.fileName.split('.')[0]}.pdf`);
+      pdf.save(`GeneShield_Report_${data.fileName?.split('.')[0] || id}.pdf`);
     } catch (e) {
       alert('PDF export failed. Try again.');
     } finally {
@@ -56,220 +68,145 @@ export default function Report() {
 
   const getRiskColor = (score) => score >= 70 ? '#ff6b6b' : score >= 45 ? '#ffb74d' : '#69f0ae';
   const getRiskLabel = (score) => score >= 70 ? 'High Risk' : score >= 45 ? 'Moderate Risk' : 'Low Risk';
-  const formatDate = (iso) => new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const formatDate = (iso) => {
+    try {
+      return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    } catch { return iso || ''; }
+  };
+
+  if (loading) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '70px' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ width: 56, height: 56, border: '3px solid rgba(0,212,255,0.2)', borderTop: '3px solid #00d4ff', borderRadius: '50%', animation: 'spin-slow 0.7s linear infinite', margin: '0 auto 1.5rem' }}></div>
+        <p style={{ color: '#849495', fontSize: '1rem' }}>Loading your genetic report...</p>
+      </div>
+    </div>
+  );
+
+  if (error || !data) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '70px' }}>
+      <div style={{ textAlign: 'center', maxWidth: '400px', padding: '0 1.5rem' }}>
+        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔍</div>
+        <h2 style={{ color: '#f0f6ff', marginBottom: '0.75rem' }}>Report Not Found</h2>
+        <p style={{ color: '#4a5568', marginBottom: '1.5rem' }}>{error || 'This report was not found in your history.'}</p>
+        <button onClick={() => navigate('/dashboard')} className="btn btn-primary">← Back to Dashboard</button>
+      </div>
+    </div>
+  );
 
   const tabs = [
-    { id: 'overview', label: '📊 Overview', icon: '📊' },
-    { id: 'variants', label: '🧬 Variants', icon: '🧬' },
-    { id: 'diseases', label: '🏥 Disease Risks', icon: '🏥' },
-    { id: 'ai', label: '🤖 AI Report', icon: '🤖' }
+    { id: 'overview', label: '📊 Overview' },
+    { id: 'variants', label: '🧬 Variants' },
+    { id: 'diseases', label: '🩺 Disease Risks' },
+    { id: 'ai', label: '🤖 AI Report' },
   ];
 
-  if (loading) {
-    return (
-      <div className="page-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div className="spinner spinner-lg" style={{ margin: '0 auto 1rem' }}></div>
-          <p style={{ color: 'var(--text-muted)' }}>Loading your genetic report...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !data) {
-    return (
-      <div className="page-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>❌</div>
-          <h2 style={{ marginBottom: '0.5rem' }}>Report Not Found</h2>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>{error}</p>
-          <Link to="/dashboard"><button className="btn btn-primary">← Back to Dashboard</button></Link>
-        </div>
-      </div>
-    );
-  }
-
-  const riskColor = getRiskColor(data.overallRiskScore);
-
   return (
-    <div className="page-wrapper" ref={reportRef}>
-      <div className="glow-orb" style={{ width: 500, height: 500, background: `${riskColor}10`, top: 0, right: '-10%' }} />
+    <div style={{ minHeight: '100vh', paddingTop: '70px', paddingBottom: '4rem' }}>
+      <div style={{ position: 'fixed', top: '5%', left: '-5%', width: 500, height: 500, background: 'rgba(124,58,237,0.06)', borderRadius: '50%', filter: 'blur(80px)', pointerEvents: 'none', zIndex: 0 }} />
+      <div style={{ position: 'fixed', bottom: '5%', right: '-5%', width: 400, height: 400, background: 'rgba(0,212,255,0.06)', borderRadius: '50%', filter: 'blur(80px)', pointerEvents: 'none', zIndex: 0 }} />
 
-      <div className="container" style={{ paddingTop: '2rem', paddingBottom: '4rem', position: 'relative', zIndex: 1 }}>
-        {/* Breadcrumb */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-          <Link to="/dashboard" style={{ color: 'var(--accent-primary)' }}>Dashboard</Link>
-          <span>›</span>
-          <span>Analysis Report</span>
+      <div ref={reportRef} style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 1.5rem', position: 'relative', zIndex: 1 }}>
+
+        {/* Breadcrumb + actions */}
+        <div style={{ padding: '2rem 0 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <Link to="/dashboard" style={{ color: '#4a5568', textDecoration: 'none', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '0.5rem' }}>
+              ← Dashboard
+            </Link>
+            <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#f0f6ff', margin: 0 }}>{data.fileName}</h1>
+            <p style={{ color: '#4a5568', fontSize: '0.82rem', marginTop: '0.25rem' }}>Generated: {formatDate(data.createdAt)}</p>
+          </div>
+          <button
+            onClick={handlePDFExport}
+            disabled={exporting}
+            className="btn btn-primary"
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.875rem', opacity: exporting ? 0.7 : 1 }}
+          >
+            {exporting ? '⏳ Exporting...' : '📄 Export PDF'}
+          </button>
         </div>
 
-        {/* Header */}
-        <div style={{
-          padding: '2rem',
-          background: `linear-gradient(135deg, ${riskColor}10, rgba(2,11,24,0.8))`,
-          border: `1px solid ${riskColor}25`,
-          borderRadius: 'var(--radius-xl)',
-          marginBottom: '2rem'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.5rem' }}>
-            <div style={{ flex: 1 }}>
-              <div className="section-tag" style={{ marginBottom: '0.75rem' }}>Genetic Analysis Report</div>
-              <h1 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '0.5rem' }}>
-                {data.fileName}
-              </h1>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1rem' }}>
-                Analyzed on {formatDate(data.createdAt)}
-              </p>
-              {/* Quick stats */}
-              <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-                {[
-                  { label: 'Variants Scanned', value: data.totalVariantsScanned },
-                  { label: 'Matches Found', value: data.matchedVariants },
-                  { label: 'High Risk', value: data.riskBreakdown?.high || 0 },
-                  { label: 'Conditions Flagged', value: data.diseaseRisks?.length || 0 }
-                ].map((s, i) => (
-                  <div key={i}>
-                    <div style={{ fontSize: '1.4rem', fontWeight: 800, color: riskColor, fontFamily: 'Space Grotesk' }}>{s.value}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{s.label}</div>
-                  </div>
-                ))}
-              </div>
+        {/* Summary cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: '1rem', marginBottom: '2rem' }}>
+          {[
+            { label: 'Overall Risk Score', value: `${data.overallRiskScore}/100`, color: getRiskColor(data.overallRiskScore) },
+            { label: 'Risk Level', value: getRiskLabel(data.overallRiskScore), color: getRiskColor(data.overallRiskScore) },
+            { label: 'Variants Scanned', value: data.totalVariantsScanned, color: '#00d4ff' },
+            { label: 'Matched Variants', value: data.matchedVariants, color: '#7c3aed' },
+          ].map((c, i) => (
+            <div key={i} style={{ background: 'rgba(6,20,36,0.9)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '14px', padding: '1.25rem', animation: `fadeInUp 0.4s ease ${i * 0.06}s both` }}>
+              <div style={{ fontSize: '0.72rem', color: '#4a5568', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.4rem' }}>{c.label}</div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 900, color: c.color, fontFamily: 'Space Grotesk' }}>{c.value}</div>
             </div>
-            {/* Big risk score */}
-            <div style={{ textAlign: 'center' }}>
-              <div style={{
-                width: '120px', height: '120px',
-                borderRadius: '50%',
-                border: `4px solid ${riskColor}`,
-                background: `${riskColor}10`,
-                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                boxShadow: `0 0 40px ${riskColor}30`
-              }}>
-                <div style={{ fontSize: '2.5rem', fontWeight: 900, color: riskColor, fontFamily: 'Space Grotesk', lineHeight: 1 }}>{data.overallRiskScore}</div>
-                <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', marginTop: '2px' }}>/ 100</div>
-              </div>
-              <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', fontWeight: 700, color: riskColor }}>{getRiskLabel(data.overallRiskScore)}</div>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
-            <button className="btn btn-primary btn-sm" onClick={handlePDFExport} disabled={exporting}>
-              {exporting ? <><span className="spinner" style={{ width: 16, height: 16 }}></span> Exporting...</> : '📄 Export PDF'}
-            </button>
-            <Link to="/dashboard"><button className="btn btn-ghost btn-sm">← Back to Dashboard</button></Link>
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <div style={{ display: 'flex', gap: '0.25rem', background: 'rgba(255,255,255,0.03)', padding: '0.3rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-glass)', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              style={{
-                padding: '0.6rem 1.25rem',
-                borderRadius: 'var(--radius-sm)',
-                border: 'none',
-                cursor: 'pointer',
-                fontFamily: 'Inter',
-                fontSize: '0.88rem',
-                fontWeight: 600,
-                transition: 'var(--transition)',
-                background: activeTab === tab.id ? 'var(--gradient-primary)' : 'transparent',
-                color: activeTab === tab.id ? '#000' : 'var(--text-secondary)',
-              }}
-            >{tab.label}</button>
           ))}
         </div>
 
-        {/* Tab Content */}
+        {/* Risk breakdown badges */}
+        <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
+          {[
+            { label: 'High Risk', count: data.riskBreakdown?.high || 0, color: '#ff6b6b' },
+            { label: 'Moderate Risk', count: data.riskBreakdown?.medium || 0, color: '#ffb74d' },
+            { label: 'Low Risk', count: data.riskBreakdown?.low || 0, color: '#69f0ae' },
+          ].map((b, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', background: `${b.color}10`, border: `1px solid ${b.color}40`, borderRadius: '20px' }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: b.color, flexShrink: 0 }}></span>
+              <span style={{ fontSize: '0.78rem', fontWeight: 600, color: b.color }}>{b.count} {b.label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Tabs */}
+        <div style={{ display: 'flex', gap: '0.25rem', borderBottom: '1px solid rgba(255,255,255,0.07)', marginBottom: '2rem', overflowX: 'auto' }}>
+          {tabs.map(t => (
+            <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
+              background: activeTab === t.id ? 'rgba(0,212,255,0.1)' : 'none',
+              border: 'none', borderBottom: activeTab === t.id ? '2px solid #00d4ff' : '2px solid transparent',
+              padding: '0.75rem 1.25rem', cursor: 'pointer',
+              color: activeTab === t.id ? '#00d4ff' : '#4a5568',
+              fontSize: '0.85rem', fontWeight: activeTab === t.id ? 700 : 500,
+              transition: 'all 0.2s', whiteSpace: 'nowrap', fontFamily: 'inherit'
+            }}>{t.label}</button>
+          ))}
+        </div>
+
+        {/* Tab content */}
         {activeTab === 'overview' && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-            {/* Risk Donut */}
-            <div className="glass-card" style={{ padding: '2rem', textAlign: 'center' }}>
-              <h3 style={{ fontWeight: 700, marginBottom: '1.5rem', fontSize: '1rem', color: 'var(--text-secondary)' }}>Overall Genomic Risk Score</h3>
-              <RiskDonutChart overallRiskScore={data.overallRiskScore} riskBreakdown={data.riskBreakdown} />
-              <p style={{ marginTop: '1.5rem', fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-                Your genomic risk score is <strong style={{ color: riskColor }}>{data.overallRiskScore}/100</strong> based on {data.matchedVariants} matched genetic variants.
-              </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: '1.5rem' }}>
+            <div style={{ background: 'rgba(6,20,36,0.9)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', padding: '1.5rem' }}>
+              <h3 style={{ color: '#f0f6ff', marginBottom: '1rem', fontSize: '1rem' }}>Risk Score</h3>
+              <RiskDonutChart score={data.overallRiskScore} />
             </div>
-
-            {/* Risk Breakdown */}
-            <div className="glass-card" style={{ padding: '2rem', textAlign: 'center' }}>
-              <h3 style={{ fontWeight: 700, marginBottom: '1.5rem', fontSize: '1rem', color: 'var(--text-secondary)' }}>Variant Risk Distribution</h3>
-              <div style={{ maxWidth: '220px', margin: '0 auto' }}>
-                <RiskBreakdownChart riskBreakdown={data.riskBreakdown} />
+            <div style={{ background: 'rgba(6,20,36,0.9)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', padding: '1.5rem' }}>
+              <h3 style={{ color: '#f0f6ff', marginBottom: '1rem', fontSize: '1rem' }}>Risk Breakdown</h3>
+              <RiskBreakdownChart breakdown={data.riskBreakdown} />
+            </div>
+            {data.aiSummary && (
+              <div style={{ background: 'rgba(6,20,36,0.9)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', padding: '1.5rem', gridColumn: '1 / -1' }}>
+                <h3 style={{ color: '#00d4ff', marginBottom: '0.75rem', fontSize: '1rem' }}>🤖 AI Summary</h3>
+                <p style={{ color: '#b9cacb', lineHeight: 1.7, fontSize: '0.9rem' }}>{data.aiSummary.headline}</p>
+                {data.aiSummary.overview && <p style={{ color: '#849495', lineHeight: 1.7, fontSize: '0.875rem', marginTop: '0.5rem' }}>{data.aiSummary.overview}</p>}
               </div>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginTop: '1rem' }}>
-                {[
-                  { label: 'High', value: data.riskBreakdown?.high || 0, color: '#ff6b6b' },
-                  { label: 'Medium', value: data.riskBreakdown?.medium || 0, color: '#ffb74d' },
-                  { label: 'Low', value: data.riskBreakdown?.low || 0, color: '#69f0ae' }
-                ].map((item, i) => (
-                  <div key={i} style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 800, color: item.color, fontFamily: 'Space Grotesk' }}>{item.value}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>{item.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Top High-Risk Conditions */}
-            <div className="glass-card" style={{ padding: '2rem', gridColumn: '1 / -1' }}>
-              <h3 style={{ fontWeight: 700, marginBottom: '1.5rem', fontSize: '1rem' }}>Top Disease Risk Scores</h3>
-              <DiseaseRiskBarChart diseaseRisks={data.diseaseRisks} />
-            </div>
+            )}
           </div>
         )}
 
         {activeTab === 'variants' && (
-          <div className="glass-card" style={{ padding: '1.75rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-              <h3 style={{ fontWeight: 700, fontSize: '1.1rem' }}>Matched Genetic Variants</h3>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', background: 'var(--bg-glass)', padding: '3px 10px', borderRadius: 'var(--radius-full)', border: '1px solid var(--border-glass)' }}>
-                {data.variants?.length || 0} variants
-              </span>
-            </div>
-            <VariantTable variants={data.variants} />
+          <div style={{ background: 'rgba(6,20,36,0.9)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', padding: '1.5rem' }}>
+            <h3 style={{ color: '#f0f6ff', marginBottom: '1.25rem', fontSize: '1rem' }}>Matched Genetic Variants</h3>
+            <VariantTable variants={data.variants || []} />
           </div>
         )}
 
         {activeTab === 'diseases' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div className="glass-card" style={{ padding: '1.75rem' }}>
-              <h3 style={{ fontWeight: 700, marginBottom: '1.5rem', fontSize: '1.1rem' }}>Disease Risk Analysis</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
-                {(data.diseaseRisks || []).map((d, i) => {
-                  const col = d.score >= 70 ? '#ff6b6b' : d.score >= 45 ? '#ffb74d' : '#69f0ae';
-                  return (
-                    <div key={i} style={{
-                      padding: '1.25rem',
-                      background: `${col}08`,
-                      border: `1px solid ${col}25`,
-                      borderRadius: 'var(--radius-md)',
-                      animation: `fadeInUp 0.4s ease ${i * 0.06}s both`
-                    }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                        <h4 style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)', flex: 1 }}>{d.disease}</h4>
-                        <span style={{ fontSize: '1.1rem', fontWeight: 900, color: col, fontFamily: 'Space Grotesk', marginLeft: '0.5rem' }}>{d.score}</span>
-                      </div>
-                      <div className="progress-bar-wrap" style={{ height: 6, marginBottom: '0.5rem' }}>
-                        <div className="progress-bar-fill" style={{ width: `${d.score}%`, background: d.score >= 70 ? 'linear-gradient(90deg,#ff4444,#ff9800)' : d.score >= 45 ? 'linear-gradient(90deg,#ff9800,#ffd740)' : 'linear-gradient(90deg,#00e676,#00b0ff)' }} />
-                      </div>
-                      <span className={`badge badge-${d.level.toLowerCase()}`} style={{ fontSize: '0.7rem' }}>{d.level} RISK</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+          <div style={{ background: 'rgba(6,20,36,0.9)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', padding: '1.5rem' }}>
+            <h3 style={{ color: '#f0f6ff', marginBottom: '1.25rem', fontSize: '1rem' }}>Disease Risk Profile</h3>
+            <DiseaseRiskBarChart diseases={data.diseaseRisks || []} />
           </div>
         )}
 
         {activeTab === 'ai' && (
-          <div className="glass-card" style={{ padding: '2rem' }}>
-            <AIReport aiSummary={data.aiSummary} />
-          </div>
+          <AIReport report={data.aiSummary} variants={data.variants} />
         )}
       </div>
     </div>

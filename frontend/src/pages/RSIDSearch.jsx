@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { rsidAPI } from '../services/api';
+import { saveAnalysis, getUserId } from '../services/analysisStore';
 
 const RISK_COLOR = { HIGH: '#ff6b6b', MEDIUM: '#ffb74d', LOW: '#69f0ae' };
 const RISK_BG = { HIGH: 'rgba(255,68,68,0.08)', MEDIUM: 'rgba(255,152,0,0.08)', LOW: 'rgba(0,230,118,0.07)' };
@@ -94,22 +95,11 @@ export default function RSIDSearch() {
         setResult(res.data.variant);
       }
 
-      // Sync and backup the single locus analysis in localStorage
+      // Save analysis to localStorage for persistent storage across sessions
       if (res.data.analysis) {
-        const user = JSON.parse(localStorage.getItem('geneshield_user') || '{}');
-        if (user.id) {
-          const localBackupKey = `geneshield_backup_analyses_${user.id}`;
-          let localBackup = [];
-          try {
-            localBackup = JSON.parse(localStorage.getItem(localBackupKey) || '[]');
-            if (!Array.isArray(localBackup)) localBackup = [];
-          } catch {
-            localBackup = [];
-          }
-          if (!localBackup.some(a => a.id === res.data.analysis.id)) {
-            localBackup.unshift(res.data.analysis);
-            localStorage.setItem(localBackupKey, JSON.stringify(localBackup));
-          }
+        const userId = getUserId();
+        if (userId) {
+          saveAnalysis(userId, res.data.analysis);
         }
       }
     } catch (err) {
