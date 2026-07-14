@@ -17,7 +17,7 @@ API.interceptors.request.use((config) => {
 API.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err.response?.status === 401) {
+    if (err.response?.status === 401 && window.location.pathname !== '/login') {
       localStorage.removeItem('geneshield_token');
       localStorage.removeItem('geneshield_user');
       window.location.href = '/login';
