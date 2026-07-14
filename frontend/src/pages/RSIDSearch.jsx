@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { rsidAPI } from '../services/api';
 
 const RISK_COLOR = { HIGH: '#ff6b6b', MEDIUM: '#ffb74d', LOW: '#69f0ae' };
@@ -479,6 +480,26 @@ export default function RSIDSearch() {
                       <span style={{ color: '#69f0ae', fontSize: '0.88rem', fontWeight: 500 }}>{aiReport.goodNews}</span>
                     </div>
                   )}
+
+                  {/* Dashboard notice */}
+                  <div style={{
+                    padding: '1rem 1.25rem',
+                    background: 'rgba(0, 212, 255, 0.1)',
+                    border: '1px solid rgba(0, 212, 255, 0.25)',
+                    borderRadius: '12px',
+                    marginBottom: '1rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '10px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '1.1rem' }}>📈</span>
+                      <span style={{ color: '#00d4ff', fontSize: '0.85rem', fontWeight: 600 }}>This analysis report has been saved to your dashboard history!</span>
+                    </div>
+                    <Link to="/dashboard" style={{ color: '#00d4ff', fontSize: '0.85rem', fontWeight: 700, textDecoration: 'underline' }}>View Dashboard →</Link>
+                  </div>
 
                   {/* Disclaimer */}
                   <p style={{ fontSize: '0.75rem', color: '#4a5568', lineHeight: 1.6, padding: '0.75rem 1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.04)' }}>
