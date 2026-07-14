@@ -7,11 +7,13 @@ const { v4: uuidv4 } = require('uuid');
 
 const otpStore = {};
 
-const getDatabasePath = (filename) => {
-  const localPath = path.join(__dirname, '../data', filename);
-  let finalPath = localPath;
+const ADMIN_HASH = '$2a$10$X/cB0j/mOE4uTLEAjWvW0ekqTXmO1iIt2gaAf3n5lwOHtIGlnBTYW';
+const JWT_SECRET = process.env.JWT_SECRET || 'geneshield_secret_2026';
+
+const getUsersFilePath = () => {
+  const localPath = path.join(__dirname, '../data', 'users.json');
   if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
-    const tmpPath = path.join('/tmp', filename);
+    const tmpPath = path.join('/tmp', 'users.json');
     if (!fs.existsSync(tmpPath)) {
       try {
         const content = fs.readFileSync(localPath, 'utf8');
@@ -20,58 +22,49 @@ const getDatabasePath = (filename) => {
         fs.writeFileSync(tmpPath, '[]');
       }
     }
-    finalPath = tmpPath;
+    return tmpPath;
   }
-
-  // Database Self-Healing: Force/Restore the admin user to match documentation
-  if (filename === 'users.json') {
-    try {
-      let data = [];
-      try {
-        data = JSON.parse(fs.readFileSync(finalPath, 'utf8'));
-        if (!Array.isArray(data)) data = [];
-      } catch (err) {
-        data = [];
-      }
-
-      let admin = data.find(u => u.email === 'admin@geneshield.ai');
-      const correctHash = '$2a$10$X/cB0j/mOE4uTLEAjWvW0ekqTXmO1iIt2gaAf3n5lwOHtIGlnBTYW';
-
-      if (!admin) {
-        admin = {
-          id: 'admin-001',
-          name: 'Admin',
-          email: 'admin@geneshield.ai',
-          password: correctHash,
-          isAdmin: true,
-          createdAt: new Date().toISOString()
-        };
-        data.push(admin);
-        fs.writeFileSync(finalPath, JSON.stringify(data, null, 2));
-        console.log('🔑 Admin account missing! Re-created and restored successfully.');
-      } else if (admin.password !== correctHash) {
-        admin.password = correctHash;
-        fs.writeFileSync(finalPath, JSON.stringify(data, null, 2));
-        console.log('🔑 Admin password hash successfully healed/updated.');
-      }
-    } catch (e) {
-      console.error('Self-healing failed:', e);
-    }
-  }
-
-  return finalPath;
+  return localPath;
 };
 
-const USERS_FILE = getDatabasePath('users.json');
-const JWT_SECRET = process.env.JWT_SECRET || 'geneshield_secret_2026';
-
 const readUsers = () => {
-  try { return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8')); }
-  catch { return []; }
+  const filePath = getUsersFilePath();
+  let data = [];
+  try {
+    data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    if (!Array.isArray(data)) data = [];
+  } catch {
+    data = [];
+  }
+
+  // Self-heal admin on EVERY read so stale /tmp caches are always fixed
+  let changed = false;
+  let admin = data.find(u => u.email === 'admin@geneshield.ai');
+  if (!admin) {
+    data.push({
+      id: 'admin-001',
+      name: 'Admin',
+      email: 'admin@geneshield.ai',
+      password: ADMIN_HASH,
+      isAdmin: true,
+      createdAt: '2026-07-13T00:00:00.000Z'
+    });
+    changed = true;
+    console.log('[GeneShield] Admin account restored.');
+  } else if (admin.password !== ADMIN_HASH) {
+    admin.password = ADMIN_HASH;
+    changed = true;
+    console.log('[GeneShield] Admin password hash corrected.');
+  }
+  if (changed) {
+    try { fs.writeFileSync(filePath, JSON.stringify(data, null, 2)); } catch {}
+  }
+  return data;
 };
 
 const writeUsers = (users) => {
-  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+  const filePath = getUsersFilePath();
+  fs.writeFileSync(filePath, JSON.stringify(users, null, 2));
 };
 
 exports.register = async (req, res) => {
