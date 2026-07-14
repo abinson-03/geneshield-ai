@@ -1,9 +1,17 @@
 const fs = require('fs');
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 const { generateAIReport } = require('../services/aiService');
 
 const CLINVAR_DB = path.join(__dirname, '../data/clinvar_db.json');
+const ANALYSES_FILE = path.join(__dirname, '../data/analyses.json');
+
 const readClinVar = () => JSON.parse(fs.readFileSync(CLINVAR_DB, 'utf8'));
+const readAnalyses = () => {
+  try { return JSON.parse(fs.readFileSync(ANALYSES_FILE, 'utf8')); }
+  catch { return []; }
+};
+const writeAnalyses = (data) => fs.writeFileSync(ANALYSES_FILE, JSON.stringify(data, null, 2));
 
 // Identify obviously fake, repeating, or sequential RSIDs typed by humans
 const isObviouslyFakeRSID = (rsid) => {
@@ -227,6 +235,68 @@ exports.getAIReport = async (req, res) => {
     if (!record) {
       db.push(responseVariant);
       fs.writeFileSync(CLINVAR_DB, JSON.stringify(db, null, 2));
+    }
+
+    // Automatically save this lookup as a Dashboard Analysis report if the user is logged in
+    if (req.user) {
+      const analyses = readAnalyses();
+      const overallScore = responseVariant.risk_score;
+      const level = responseVariant.risk_level;
+      
+      const analysisRecord = {
+        id: uuidv4(),
+        userId: req.user.id,
+        fileName: `Single Locus: ${responseVariant.rsid}`,
+        createdAt: new Date().toISOString(),
+        totalVariantsScanned: 1,
+        matchedVariants: 1,
+        overallRiskScore: overallScore,
+        riskBreakdown: {
+          high: level === 'HIGH' ? 1 : 0,
+          medium: level === 'MEDIUM' ? 1 : 0,
+          low: level === 'LOW' ? 1 : 0
+        },
+        variants: [
+          {
+            rsid: responseVariant.rsid,
+            gene: responseVariant.gene,
+            genotype: genotype || 'Not specified',
+            chromosome: responseVariant.chromosome,
+            risk_allele: responseVariant.risk_allele,
+            risk_level: responseVariant.risk_level,
+            risk_score: responseVariant.risk_score,
+            diseases: responseVariant.diseases,
+            description: responseVariant.description,
+            advice: responseVariant.advice
+          }
+        ],
+        diseaseRisks: responseVariant.diseases.map(d => ({
+          disease: d,
+          score: overallScore,
+          level: level,
+          count: 1
+        })),
+        aiSummary: {
+          headline: aiReport.headline || `Single variant analysis completed for ${responseVariant.rsid}.`,
+          overview: aiReport.whatItMeans || `This report details the health implications of carrying the genotype ${genotype} at the ${responseVariant.rsid} locus.`,
+          topConcerns: [
+            {
+              gene: responseVariant.gene,
+              rsid: responseVariant.rsid,
+              diseases: responseVariant.diseases,
+              keyAdvice: aiReport.yourRisk || 'Refer to personalized recommendations.'
+            }
+          ],
+          dietPlan: aiReport.dietPlan || [],
+          exercisePlan: aiReport.exercisePlan || [],
+          screeningSchedule: aiReport.screeningSchedule || [],
+          lifestyleChanges: aiReport.lifestyleChanges || [],
+          disclaimer: aiReport.disclaimer || 'Standard medical disclaimer'
+        }
+      };
+      
+      analyses.push(analysisRecord);
+      writeAnalyses(analyses);
     }
 
     res.json({

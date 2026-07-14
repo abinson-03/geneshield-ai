@@ -16,4 +16,19 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-module.exports = authMiddleware;
+// Optional auth: decodes token if present, but does not block if missing
+const optionalAuth = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1];
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      req.user = decoded;
+    } catch (err) {
+      // Proceed without req.user if token is invalid
+    }
+  }
+  next();
+};
+
+module.exports = { authMiddleware, optionalAuth };

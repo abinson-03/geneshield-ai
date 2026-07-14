@@ -768,5 +768,96 @@
         "Stay up-to-date on recommended vaccinations to prevent infections"
       ]
     }
+  },
+  {
+    "rsid": "rs2277212",
+    "gene": "IL23R",
+    "chromosome": "1",
+    "risk_allele": "A",
+    "risk_level": "MEDIUM",
+    "risk_score": 60,
+    "diseases": [
+      "Crohn's disease",
+      "Ulcerative colitis",
+      "Psoriasis"
+    ],
+    "description": "The rs2277212 variant is associated with the IL23R gene, which plays a crucial role in the immune system. This variation can affect the function of the IL-23 receptor, leading to an increased risk of developing certain autoimmune diseases, such as Crohn's disease and ulcerative colitis.",
+    "advice": {
+      "diet": [
+        "Increase your intake of omega-3 fatty acids, found in fatty fish, to help reduce inflammation",
+        "Eat a balanced diet rich in fruits, vegetables, and whole grains to support overall health",
+        "Consider incorporating probiotics into your diet to support gut health",
+        "Limit your intake of processed and high-sugar foods, which can exacerbate inflammation",
+        "Stay hydrated by drinking plenty of water and limiting sugary drinks",
+        "Include foods high in fiber, such as legumes and whole grains, to support healthy digestion",
+        "Avoid trigger foods that can exacerbate autoimmune symptoms, such as gluten or dairy"
+      ],
+      "exercise": [
+        "Aim for at least 30 minutes of moderate-intensity exercise, such as brisk walking, most days of the week",
+        "Incorporate stress-reducing activities, such as yoga or meditation, to help manage stress",
+        "Consider high-intensity interval training (HIIT) to improve cardiovascular health and reduce inflammation",
+        "Include strength-training exercises to maintain muscle mass and support overall health",
+        "Listen to your body and rest when needed, as overexertion can exacerbate autoimmune symptoms"
+      ],
+      "screening": [
+        "Schedule regular check-ups with your healthcare provider to monitor your digestive health",
+        "Consider getting screened for autoimmune diseases, such as Crohn's disease or ulcerative colitis, if you're experiencing symptoms",
+        "Get tested for vitamin deficiencies, such as vitamin D or B12, which are common in individuals with autoimmune diseases",
+        "Discuss your genetic results with your healthcare provider to determine the best screening schedule for you",
+        "Stay up-to-date on recommended vaccinations to prevent infections that can trigger autoimmune symptoms"
+      ],
+      "lifestyle": [
+        "Don't smoke, as smoking can exacerbate autoimmune symptoms and increase the risk of complications",
+        "Limit your stress levels by engaging in stress-reducing activities, such as meditation or deep breathing",
+        "Get enough sleep, aiming for 7-9 hours per night, to help regulate your immune system",
+        "Avoid exposure to toxins, such as pesticides or heavy metals, which can trigger autoimmune symptoms",
+        "Stay connected with friends and family to build a support network and reduce stress"
+      ]
+    }
+  },
+  {
+    "rsid": "rs3094315",
+    "gene": "FGF5",
+    "chromosome": "4",
+    "risk_allele": "G",
+    "risk_level": "MEDIUM",
+    "risk_score": 40,
+    "diseases": [
+      "Androgenetic Alopecia",
+      "Hair Loss"
+    ],
+    "description": "The rs3094315 variant is associated with the FGF5 gene, which plays a role in hair growth regulation. The risk allele G is linked to an increased risk of androgenetic alopecia, a common form of hair loss.",
+    "advice": {
+      "diet": [
+        "Eat a balanced diet rich in vitamins and minerals, particularly those that promote hair growth such as biotin, vitamin D, and omega-3 fatty acids",
+        "Include foods high in antioxidants, such as berries, leafy greens, and nuts, to reduce oxidative stress",
+        "Stay hydrated by drinking plenty of water to help maintain healthy hair follicles",
+        "Consider taking supplements like saw palmetto, which may help block the conversion of testosterone to dihydrotestosterone (DHT), a hormone linked to hair loss",
+        "Limit your intake of processed foods, sugar, and saturated fats, which can contribute to inflammation and hair loss",
+        "Incorporate foods rich in zinc, such as oysters, beef, and chicken, to support hair growth",
+        "Eat foods high in protein, such as fish, eggs, and beans, to help strengthen hair follicles"
+      ],
+      "exercise": [
+        "Engage in regular aerobic exercise, such as walking or jogging, to improve blood flow and reduce stress",
+        "Incorporate strength training exercises to help reduce inflammation and promote overall health",
+        "Practice stress-reducing techniques like yoga or meditation to help manage stress, which can contribute to hair loss",
+        "Aim for at least 30 minutes of moderate-intensity exercise per day to help maintain a healthy weight and reduce the risk of chronic diseases",
+        "Consider incorporating scalp massage into your routine to increase blood flow and reduce tension"
+      ],
+      "screening": [
+        "Schedule regular check-ups with your healthcare provider to monitor your overall health and discuss any concerns about hair loss",
+        "Consider getting a hair loss evaluation by a dermatologist if you notice significant hair thinning or loss",
+        "Get regular blood tests to check for underlying conditions that may be contributing to hair loss, such as thyroid disorders or hormonal imbalances",
+        "Discuss with your healthcare provider the possibility of genetic testing to determine your individual risk factors",
+        "Attend annual health check-ups to stay on top of your overall health and catch any potential issues early"
+      ],
+      "lifestyle": [
+        "Reduce stress through relaxation techniques like meditation or deep breathing exercises",
+        "Get enough sleep, aiming for 7-8 hours per night, to help regulate hormones and support hair growth",
+        "Avoid excessive heat styling, harsh chemicals, and tight hairstyles that can damage hair and contribute to loss",
+        "Use gentle hair care products and avoid excessive washing, which can strip hair of its natural oils",
+        "Consider reducing your exposure to environmental toxins, such as those found in pollution and certain chemicals, which can contribute to hair loss"
+      ]
+    }
   }
 ]
