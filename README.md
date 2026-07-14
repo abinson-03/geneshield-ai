@@ -1,6 +1,6 @@
 # GeneShield AI 🧬
 ### A Microservice-Driven Genetic Risk Analysis and Preventive Healthcare Platform
-**SNGCE MCA Mini Project | Abinson Babu | 3rd Semester | 2026-2027**
+**EvaSync Team Project | Developed for Techy Spot Hackathon 2026-2027**
 
 ---
 
@@ -96,8 +96,8 @@ The app includes a curated database of 20 well-documented RSIDs:
 ---
 
 ## ⚠️ Disclaimer
-GeneShield AI is a student mini-project for **educational purposes only**. It does not provide medical diagnoses and should not be used as a substitute for professional medical advice.
+GeneShield AI is built for **educational and hackathon presentation purposes only**. It does not provide medical diagnoses and should not be used as a substitute for professional medical advice.
 
 ---
 
-*Built with ❤️ by Abinson Babu for SNGCE MCA Program*
+*Built with ❤️ by EvaSync Team for Techy Spot Hackathon*

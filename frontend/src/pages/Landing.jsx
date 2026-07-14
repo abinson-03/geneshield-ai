@@ -214,7 +214,7 @@ export default function Landing() {
           }}>
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00f2ff', boxShadow: '0 0 10px #00f2ff', display: 'inline-block' }}></span>
             <p style={{ fontFamily: 'JetBrains Mono', fontSize: '0.68rem', fontWeight: 700, color: '#00f2ff', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
-              KTU MCA Mini Project · SNGCE 2026-2027
+              Techy Spot Hackathon 2026-2027
             </p>
           </div>
 
@@ -499,7 +499,7 @@ export default function Landing() {
       <footer style={{ borderTop: '1px solid var(--border-glass)', padding: '2rem 0', textAlign: 'center', position: 'relative', zIndex: 2 }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 1.5rem' }}>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-            🧬 <strong style={{ color: '#e5e1e4' }}>GeneShield AI</strong> — SNGCE MCA Mini Project by <strong style={{ color: '#00f2ff' }}>Abinson Babu</strong> | 3rd Semester | Academic Year 2026-2027
+            🧬 <strong style={{ color: '#e5e1e4' }}>GeneShield AI</strong> — Developed by <strong style={{ color: '#00f2ff' }}>EvaSync Team</strong> for Techy Spot Hackathon 2026-2027
           </p>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.4rem' }}>
             For educational purposes only. Not a substitute for medical advice.
