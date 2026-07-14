@@ -35,7 +35,7 @@ const getDatabasePath = (filename) => {
       }
 
       let admin = data.find(u => u.email === 'admin@geneshield.ai');
-      const correctHash = '$2a$10$CUqIJffJ4Nh4q/eVjcBwRuz8bqAyQFG2QAQCGwvgYHpTCuVCvxWQO';
+      const correctHash = '$2a$10$X/cB0j/mOE4uTLEAjWvW0ekqTXmO1iIt2gaAf3n5lwOHtIGlnBTYW';
 
       if (!admin) {
         admin = {
