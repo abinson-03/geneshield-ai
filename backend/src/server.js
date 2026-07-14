@@ -40,13 +40,11 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ error: err.message || 'Internal server error' });
 });
 
-if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
-  app.listen(PORT, () => {
-    const aiStatus = process.env.OPENAI_API_KEY ? '✅ OpenAI configured' : '⚠  No OpenAI key — using rule-based fallback';
-    console.log(`\n🧬 GeneShield AI Backend  →  http://localhost:${PORT}`);
-    console.log(`🤖 AI Status             →  ${aiStatus}`);
-    console.log(`🔑 Admin Login           →  admin@geneshield.ai / Admin@1234\n`);
-  });
-}
+app.listen(PORT, () => {
+  const aiStatus = process.env.OPENAI_API_KEY ? '✅ OpenAI configured' : '⚠  No OpenAI key — using rule-based fallback';
+  console.log(`\n🧬 GeneShield AI Backend  →  http://localhost:${PORT}`);
+  console.log(`🤖 AI Status             →  ${aiStatus}`);
+  console.log(`🔑 Admin Login           →  admin@geneshield.ai / Admin@1234\n`);
+});
 
 module.exports = app;
