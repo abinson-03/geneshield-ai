@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Report from './pages/Report';
 import AdminPanel from './pages/AdminPanel';
 import RSIDSearch from './pages/RSIDSearch';
+import Profile from './pages/Profile';
 import './index.css';
 
 function ShaderBackground() {
@@ -171,6 +172,7 @@ export default function App() {
         <Route path="/register" element={<PublicOnlyRoute><Register /></PublicOnlyRoute>} />
         <Route path="/search" element={<RSIDSearch />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/report/:id" element={<ProtectedRoute><Report /></ProtectedRoute>} />
         <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />

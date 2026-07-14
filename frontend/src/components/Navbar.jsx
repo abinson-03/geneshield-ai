@@ -125,6 +125,11 @@ export default function Navbar() {
                         onMouseLeave={e => { e.target.style.background = ''; e.target.style.color = '#8899aa'; }}
                       >⚙ Admin Panel</Link>
                     )}
+                    <Link to="/profile" onClick={() => setMenuOpen(false)}
+                      style={{ display: 'block', padding: '10px 16px', color: '#8899aa', fontSize: '0.88rem', textDecoration: 'none', transition: 'all 0.15s' }}
+                      onMouseEnter={e => { e.target.style.background = 'rgba(255,255,255,0.05)'; e.target.style.color = '#f0f6ff'; }}
+                      onMouseLeave={e => { e.target.style.background = ''; e.target.style.color = '#8899aa'; }}
+                    >👤 Edit Profile</Link>
                     <button
                       onClick={handleLogout}
                       style={{
