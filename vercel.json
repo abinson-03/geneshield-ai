@@ -17,7 +17,20 @@
       }
     },
     {
-      "source": "/((?!assets/).*)",
+      "source": "/assets/(.*)",
+      "destination": {
+        "service": "frontend",
+        "path": "/assets/$1"
+      }
+    },
+    {
+      "source": "/(.*\\.(js|css|ico|png|svg|woff|woff2|ttf|map))",
+      "destination": {
+        "service": "frontend"
+      }
+    },
+    {
+      "source": "/(.*)",
       "destination": {
         "service": "frontend",
         "path": "/index.html"
