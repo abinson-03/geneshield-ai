@@ -8,6 +8,13 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const showError = (msg) => {
+    setError(msg);
+    setTimeout(() => {
+      setError(prev => prev === msg ? '' : prev);
+    }, 4500);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); setError('');
@@ -17,7 +24,7 @@ export default function Login() {
       localStorage.setItem('geneshield_user', JSON.stringify(res.data.user));
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed. Please try again.');
+      showError(err.response?.data?.error || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -33,14 +40,13 @@ export default function Login() {
       localStorage.setItem('geneshield_user', JSON.stringify(res.data.user));
       navigate('/dashboard');
     } catch {
-      // Try register first
       try {
         const reg = await authAPI.register({ name: 'Demo User', email: 'demo@geneshield.ai', password: 'Demo@1234' });
         localStorage.setItem('geneshield_token', reg.data.token);
         localStorage.setItem('geneshield_user', JSON.stringify(reg.data.user));
         navigate('/dashboard');
       } catch (err2) {
-        setError('Demo login failed.');
+        showError('Demo login failed.');
       }
     } finally {
       setLoading(false);
@@ -52,6 +58,49 @@ export default function Login() {
       {/* BG */}
       <div className="glow-orb" style={{ width: 400, height: 400, background: 'rgba(0,212,255,0.08)', top: '10%', left: '10%' }} />
       <div className="glow-orb" style={{ width: 300, height: 300, background: 'rgba(124,58,237,0.1)', bottom: '10%', right: '10%' }} />
+
+      {/* Floating Popup Alert for incorrect username/password */}
+      {error && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          zIndex: 1100,
+          background: 'rgba(239, 68, 68, 0.95)',
+          border: '1.5px solid rgba(239, 68, 68, 0.3)',
+          boxShadow: '0 0 30px rgba(239, 68, 68, 0.4)',
+          borderRadius: '16px',
+          padding: '1.1rem 1.5rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          color: '#fff',
+          fontFamily: 'Inter, sans-serif',
+          fontSize: '0.92rem',
+          fontWeight: 600,
+          animation: 'slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+          backdropFilter: 'blur(15px)',
+          maxWidth: '380px'
+        }}>
+          <span style={{ fontSize: '1.3rem' }}>⚠️</span>
+          <div style={{ flex: 1, lineHeight: 1.4 }}>{error}</div>
+          <button 
+            onClick={() => setError('')} 
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              color: 'rgba(255,255,255,0.7)', 
+              fontSize: '1.3rem', 
+              cursor: 'pointer', 
+              padding: 0, 
+              marginLeft: '12px',
+              lineHeight: 1
+            }}
+            onMouseEnter={e => e.target.style.color = '#fff'}
+            onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.7)'}
+          >×</button>
+        </div>
+      )}
 
       <div className="container-sm" style={{ width: '100%', position: 'relative', zIndex: 1, padding: '2rem 1.5rem' }}>
         {/* Header */}
@@ -67,7 +116,6 @@ export default function Login() {
         </div>
 
         <div className="glass-card" style={{ padding: '2rem' }}>
-          {error && <div className="alert alert-error">{error}</div>}
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div className="form-group">

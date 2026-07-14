@@ -614,3 +614,14 @@ a { text-decoration: none; color: inherit; }
   height: 100%;
   pointer-events: none;
 }
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
