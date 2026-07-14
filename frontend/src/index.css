@@ -632,6 +632,20 @@ a { text-decoration: none; color: inherit; }
   transition: opacity 0.3s ease;
 }
 
+.dashboard-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
 @media (max-width: 768px) {
   .hero-dna-bg {
     opacity: 0.22 !important; /* Dims the 3D DNA helix on mobile for maximum text visibility */
@@ -641,5 +655,13 @@ a { text-decoration: none; color: inherit; }
   }
   .navbar {
     padding: 0 1rem !important; /* Reduce padding on mobile */
+  }
+  .dashboard-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important; /* Stack in 2x2 grid on mobile */
+    gap: 0.75rem !important;
+  }
+  .dashboard-grid {
+    grid-template-columns: 1fr !important; /* Stack columns on mobile */
+    gap: 1.25rem !important;
   }
 }

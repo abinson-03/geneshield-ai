@@ -86,7 +86,7 @@ export default function Dashboard() {
         )}
 
         {/* Stats row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem', marginBottom: '2rem' }}>
+        <div className="dashboard-stats-grid">
           {[
             { label: 'Total Analyses', value: analyses.length, icon: '🔬', color: '#00d4ff' },
             { label: 'Variants Matched', value: totalMatched, icon: '🧬', color: '#7c3aed' },
@@ -110,7 +110,7 @@ export default function Dashboard() {
         </div>
 
         {/* Main 2-column grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: '1.5rem', alignItems: 'start' }}>
+        <div className="dashboard-grid">
 
           {/* Upload panel */}
           <div style={{ animation: 'fadeInUp 0.5s ease 0.2s both' }}>
