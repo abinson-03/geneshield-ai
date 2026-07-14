@@ -11,26 +11,20 @@
   },
   "rewrites": [
     {
-      "source": "/api/(.*)",
+      "source": "/api/:path*",
       "destination": {
         "service": "backend"
       }
     },
     {
-      "source": "/assets/(.*)",
+      "source": "/assets/:path*",
       "destination": {
         "service": "frontend",
-        "path": "/assets/$1"
+        "path": "/assets/:path*"
       }
     },
     {
-      "source": "/(.*\\.(js|css|ico|png|svg|woff|woff2|ttf|map))",
-      "destination": {
-        "service": "frontend"
-      }
-    },
-    {
-      "source": "/(.*)",
+      "source": "/:path*",
       "destination": {
         "service": "frontend",
         "path": "/index.html"
