@@ -9,6 +9,7 @@ import Report from './pages/Report';
 import AdminPanel from './pages/AdminPanel';
 import RSIDSearch from './pages/RSIDSearch';
 import Profile from './pages/Profile';
+import ForgotPassword from './pages/ForgotPassword';
 import './index.css';
 
 function ShaderBackground() {
@@ -170,6 +171,7 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<PublicOnlyRoute><Login /></PublicOnlyRoute>} />
         <Route path="/register" element={<PublicOnlyRoute><Register /></PublicOnlyRoute>} />
+        <Route path="/forgot-password" element={<PublicOnlyRoute><ForgotPassword /></PublicOnlyRoute>} />
         <Route path="/search" element={<RSIDSearch />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
