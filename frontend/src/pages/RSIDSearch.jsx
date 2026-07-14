@@ -28,8 +28,7 @@ export default function RSIDSearch() {
   const [aiLoading, setAiLoading] = useState(false);
   const [error, setError] = useState('');
   const [aiError, setAiError] = useState('');
-  const [openaiKey, setOpenaiKey] = useState(localStorage.getItem('geneshield_openai_key') || '');
-  const [showKeyInput, setShowKeyInput] = useState(false);
+
   const [aiPowered, setAiPowered] = useState(false);
   const dropRef = useRef();
   const debounceRef = useRef();
@@ -87,24 +86,18 @@ export default function RSIDSearch() {
     setAiLoading(true);
     setAiError('');
     setAiReport(null);
-    const key = openaiKey.trim() || null;
     try {
-      const res = await rsidAPI.getAIReport(result.rsid, genotype || null, key);
+      const res = await rsidAPI.getAIReport(result.rsid, genotype || null, null);
       setAiReport(res.data.aiReport);
       setAiPowered(res.data.aiPowered);
       if (res.data.variant) {
         setResult(res.data.variant);
       }
     } catch (err) {
-      setAiError(err.response?.data?.error || 'Failed to generate AI report. Check your OpenAI key.');
+      setAiError(err.response?.data?.error || 'Failed to generate AI report.');
     } finally {
       setAiLoading(false);
     }
-  };
-
-  const saveKey = () => {
-    localStorage.setItem('geneshield_openai_key', openaiKey);
-    setShowKeyInput(false);
   };
 
   return (
@@ -207,46 +200,20 @@ export default function RSIDSearch() {
           </div>
 
           {/* Optional genotype input */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{ flex: 1 }}>
-              <input
-                value={genotype}
-                onChange={e => setGenotype(e.target.value.toUpperCase())}
-                placeholder="Your genotype (optional, e.g. TC, AA, CT)"
-                maxLength={4}
-                style={{
-                  width: '100%', padding: '0.65rem 1rem',
-                  background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: '10px', color: '#f0f6ff', fontSize: '0.88rem', fontFamily: 'monospace',
-                  outline: 'none', boxSizing: 'border-box'
-                }}
-              />
-            </div>
-            <button onClick={() => setShowKeyInput(!showKeyInput)}
-              style={{ padding: '0.65rem 1rem', background: openaiKey ? 'rgba(0,230,118,0.1)' : 'rgba(255,255,255,0.04)', border: `1px solid ${openaiKey ? 'rgba(0,230,118,0.25)' : 'rgba(255,255,255,0.08)'}`, borderRadius: '10px', color: openaiKey ? '#69f0ae' : '#8899aa', cursor: 'pointer', fontSize: '0.82rem', fontFamily: 'Inter', whiteSpace: 'nowrap' }}>
-              {openaiKey ? '✅ AI API Key Set' : '🔑 Add AI API Key'}
-            </button>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <input
+              value={genotype}
+              onChange={e => setGenotype(e.target.value.toUpperCase())}
+              placeholder="Your genotype (optional, e.g. TC, AA, CT)"
+              maxLength={4}
+              style={{
+                width: '100%', padding: '0.65rem 1rem',
+                background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: '10px', color: '#f0f6ff', fontSize: '0.88rem', fontFamily: 'monospace',
+                outline: 'none', boxSizing: 'border-box'
+              }}
+            />
           </div>
-
-          {/* AI key input */}
-          {showKeyInput && (
-            <div style={{ marginTop: '0.75rem', padding: '1rem', background: 'rgba(0,212,255,0.05)', border: '1px solid rgba(0,212,255,0.15)', borderRadius: '12px' }}>
-              <p style={{ fontSize: '0.8rem', color: '#8899aa', marginBottom: '0.6rem' }}>
-                🤖 Enter your **OpenAI API Key** (`sk-...`) or a **Groq API Key** (`gsk_...`) to get real-time genetic predictions. Groq API keys are **completely free** to create and use!
-              </p>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <input
-                  value={openaiKey}
-                  onChange={e => setOpenaiKey(e.target.value)}
-                  placeholder="sk-... or gsk_..."
-                  type="password"
-                  style={{ flex: 1, padding: '0.6rem 0.9rem', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#f0f6ff', fontSize: '0.85rem', fontFamily: 'monospace', outline: 'none', boxSizing: 'border-box' }}
-                />
-                <button onClick={saveKey} style={{ padding: '0.6rem 1.2rem', background: 'linear-gradient(135deg,#00e676,#00b0ff)', border: 'none', borderRadius: '8px', color: '#000', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', fontFamily: 'Inter' }}>Save</button>
-                {openaiKey && <button onClick={() => { setOpenaiKey(''); localStorage.removeItem('geneshield_openai_key'); }} style={{ padding: '0.6rem 0.8rem', background: 'rgba(255,68,68,0.1)', border: '1px solid rgba(255,68,68,0.25)', borderRadius: '8px', color: '#ff6b6b', cursor: 'pointer', fontSize: '0.82rem' }}>Clear</button>}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Popular RSIDs */}
@@ -390,8 +357,8 @@ export default function RSIDSearch() {
                   <span style={{ fontSize: '1.3rem' }}>🤖</span>
                   <div>
                     <h3 style={{ fontWeight: 700, fontSize: '1rem', color: '#f0f6ff' }}>AI-Powered Health Report</h3>
-                    <p style={{ fontSize: '0.75rem', color: '#4a5568', marginTop: '1px' }}>
-                      {openaiKey ? 'Using GPT-4o mini · OpenAI powered' : 'Using built-in engine · Add OpenAI key for GPT-4o powered report'}
+                    <p style={{ fontSize: '0.75rem', color: '#00f2ff', marginTop: '1px' }}>
+                      ⚡ Real-time LLaMA 3.3 Powered Report (Groq AI)
                     </p>
                   </div>
                 </div>
@@ -430,7 +397,7 @@ export default function RSIDSearch() {
                 <div style={{ padding: '3rem 2rem', textAlign: 'center' }}>
                   <div style={{ width: 48, height: 48, border: '4px solid rgba(124,58,237,0.2)', borderTop: '4px solid #7c3aed', borderRadius: '50%', animation: 'spin-slow 0.7s linear infinite', margin: '0 auto 1rem' }}></div>
                   <p style={{ color: '#8899aa', fontSize: '0.9rem' }}>
-                    {openaiKey ? (openaiKey.startsWith('gsk_') ? 'LLaMA 3.3 is analyzing your genetic variant...' : 'GPT-4o is analyzing your genetic variant...') : 'Generating personalized health report...'}
+                    LLaMA 3.3 is analyzing your genetic variant via Groq...
                   </p>
                 </div>
               )}

@@ -13,9 +13,6 @@ const API = axios.create({
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem('geneshield_token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
-  // Attach user-provided OpenAI key if stored
-  const openAIKey = localStorage.getItem('geneshield_openai_key');
-  if (openAIKey) config.headers['X-OpenAI-Key'] = openAIKey;
   return config;
 });
 
