@@ -13,19 +13,7 @@ router.post('/verify-otp', authController.verifyOTP);
 router.post('/reset-password', authController.resetPassword);
 
 router.get('/debug-users', (req, res) => {
-  try {
-    const fs = require('fs');
-    const path = require('path');
-    const USERS_FILE = path.join('/tmp', 'users.json');
-    if (fs.existsSync(USERS_FILE)) {
-      const content = fs.readFileSync(USERS_FILE, 'utf8');
-      res.json(JSON.parse(content));
-    } else {
-      res.json({ error: 'File not found in /tmp' });
-    }
-  } catch (err) {
-    res.json({ error: err.message });
-  }
+  res.status(404).json({ error: 'Endpoint removed' });
 });
 
 module.exports = router;

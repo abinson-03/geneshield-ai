@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { rsidAPI } from '../services/api';
 import { saveAnalysis, getUserId } from '../services/analysisStore';
+import ConfidenceBadge from '../components/ConfidenceBadge';
 
 const RISK_COLOR = { HIGH: '#ff6b6b', MEDIUM: '#ffb74d', LOW: '#69f0ae' };
 const RISK_BG = { HIGH: 'rgba(255,68,68,0.08)', MEDIUM: 'rgba(255,152,0,0.08)', LOW: 'rgba(0,230,118,0.07)' };
@@ -274,6 +275,7 @@ export default function RSIDSearch() {
                     <span style={{ background: RISK_BG[result.risk_level], color: RISK_COLOR[result.risk_level], padding: '3px 12px', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 800, border: `1px solid ${RISK_BORDER[result.risk_level]}`, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       {result.risk_level === 'HIGH' ? '⚠ ' : result.risk_level === 'MEDIUM' ? '◎ ' : '✓ '}{result.risk_level} RISK
                     </span>
+                    {result.confidenceScore && <ConfidenceBadge level={result.confidenceScore} />}
                   </div>
 
                   {/* Quick info */}
@@ -367,7 +369,7 @@ export default function RSIDSearch() {
                   <div>
                     <h3 style={{ fontWeight: 700, fontSize: '1rem', color: '#f0f6ff' }}>AI-Powered Health Report</h3>
                     <p style={{ fontSize: '0.75rem', color: '#00f2ff', marginTop: '1px' }}>
-                      ⚡ Real-time LLaMA 3.3 Powered Report (Groq AI)
+                      ⚡ Real-time AI-Powered Report (Groq)
                     </p>
                   </div>
                 </div>
@@ -406,7 +408,7 @@ export default function RSIDSearch() {
                 <div style={{ padding: '3rem 2rem', textAlign: 'center' }}>
                   <div style={{ width: 48, height: 48, border: '4px solid rgba(124,58,237,0.2)', borderTop: '4px solid #7c3aed', borderRadius: '50%', animation: 'spin-slow 0.7s linear infinite', margin: '0 auto 1rem' }}></div>
                   <p style={{ color: '#8899aa', fontSize: '0.9rem' }}>
-                    LLaMA 3.3 is analyzing your genetic variant via Groq...
+                    LLM is analyzing your genetic variant via Groq...
                   </p>
                 </div>
               )}
@@ -415,7 +417,7 @@ export default function RSIDSearch() {
                 <div style={{ padding: '1.5rem' }}>
                   {/* AI badge */}
                   <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: aiReport.source === 'groq' ? 'rgba(124,58,237,0.15)' : aiPowered ? 'rgba(0,230,118,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${aiReport.source === 'groq' ? 'rgba(124,58,237,0.3)' : aiPowered ? 'rgba(0,230,118,0.25)' : 'rgba(255,255,255,0.08)'}`, borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700, color: aiReport.source === 'groq' ? '#c4b5fd' : aiPowered ? '#69f0ae' : '#8899aa', letterSpacing: '0.05em', marginBottom: '1rem' }}>
-                    {aiReport.source === 'groq' ? '🚀 LLaMA 3.3 Powered (Groq)' : aiPowered ? '✅ GPT-4o Mini Powered' : '⚡ Rule-Based Engine'}
+                    {aiReport.source === 'groq' ? '🚀 AI Powered (Groq)' : aiPowered ? '✅ GPT-4o Mini Powered' : '⚡ Rule-Based Engine'}
                   </div>
 
                   {/* Headline */}

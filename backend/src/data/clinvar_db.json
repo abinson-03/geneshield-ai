@@ -33,7 +33,9 @@
         "Mental stimulation through puzzles and learning",
         "Stress management practices"
       ]
-    }
+    },
+    "population_studied": ["European", "East Asian", "African American", "Global"],
+    "representation_note": "DEMO DATA — Foundational APOE e4 studies were predominantly conducted in European-descent cohorts; multi-ethnic replication exists but effect sizes vary by ancestry. Replace with verified citation."
   },
   {
     "rsid": "rs7412",
@@ -65,7 +67,9 @@
         "Avoid smoking",
         "Moderate alcohol only"
       ]
-    }
+    },
+    "population_studied": ["European", "Global"],
+    "representation_note": "DEMO DATA — APOE rs7412 (e2 allele tag) studied primarily in European cohorts. Cross-population frequency and effect data not included here. Replace with verified citation."
   },
   {
     "rsid": "rs1801133",
@@ -100,7 +104,9 @@
         "Avoid alcohol which depletes folate",
         "Manage stress to reduce inflammation"
       ]
-    }
+    },
+    "population_studied": ["European", "South Asian", "Latin American", "Global"],
+    "representation_note": "DEMO DATA — MTHFR C677T carrier frequency varies across populations (higher in certain Mediterranean and Latin American groups). No specific frequency percentages included. Replace with verified citation."
   },
   {
     "rsid": "rs1801131",
@@ -130,7 +136,9 @@
       "lifestyle": [
         "Prenatal vitamins with methylfolate if planning pregnancy"
       ]
-    }
+    },
+    "population_studied": ["European", "Global"],
+    "representation_note": "DEMO DATA — A1298C has been identified across multiple populations but is less studied than C677T. Population-specific frequency data not included. Replace with verified citation."
   },
   {
     "rsid": "rs9939609",
@@ -167,7 +175,9 @@
         "Mindful eating practices",
         "Food diary journaling"
       ]
-    }
+    },
+    "population_studied": ["European", "South Asian", "African", "Global"],
+    "representation_note": "DEMO DATA — FTO rs9939609 was originally identified in European GWAS cohorts; subsequent studies suggest the effect is attenuated in some African and South Asian populations. No specific effect-size comparisons included. Replace with verified citation."
   },
   {
     "rsid": "rs4988235",
@@ -199,7 +209,9 @@
         "Gradual dairy introduction to build tolerance",
         "Calcium supplement if dietary intake is insufficient"
       ]
-    }
+    },
+    "population_studied": ["European", "Global"],
+    "representation_note": "DEMO DATA — Lactase persistence is strongly enriched in Northern European populations. High non-persistence rates are documented in East Asian, African, and South Asian populations. No specific percentages included. Replace with verified citation."
   },
   {
     "rsid": "rs1815739",
@@ -228,7 +240,9 @@
       "lifestyle": [
         "Prioritize recovery and sleep for optimal muscle adaptation"
       ]
-    }
+    },
+    "population_studied": ["European", "East Asian", "African", "Global"],
+    "representation_note": "DEMO DATA — ACTN3 R577X has been studied across multiple ethnicities including European, East Asian, and African cohorts. The XX null genotype frequency varies by population. No frequency data included. Replace with verified citation."
   },
   {
     "rsid": "rs1800562",
@@ -261,7 +275,9 @@
         "Do not donate blood without informing about HH status",
         "Consult hematologist proactively"
       ]
-    }
+    },
+    "population_studied": ["European", "Northern European"],
+    "representation_note": "DEMO DATA — HFE C282Y is disproportionately prevalent in individuals of Northern European (especially Irish and Norwegian) descent; rare in East Asian and African populations. No prevalence percentages included. Replace with verified citation."
   },
   {
     "rsid": "rs4244285",
@@ -291,7 +307,9 @@
         "Carry medical alert information about poor metabolizer status",
         "Always discuss medications with awareness of this variant"
       ]
-    }
+    },
+    "population_studied": ["European", "East Asian", "South Asian", "Global"],
+    "representation_note": "DEMO DATA — CYP2C19*2 loss-of-function allele is more frequent in East Asian and South Asian populations compared to European populations. Exact frequency differences not included. Replace with verified citation."
   },
   {
     "rsid": "rs762551",
@@ -320,7 +338,9 @@
       "lifestyle": [
         "Monitor caffeine sensitivity symptoms"
       ]
-    }
+    },
+    "population_studied": ["European", "Global"],
+    "representation_note": "DEMO DATA — CYP1A2 rs762551 has been studied largely in European cohorts. Cross-population frequency and metabolizer phenotype data are not included here. Replace with verified citation."
   },
   {
     "rsid": "rs1800497",
@@ -353,7 +373,9 @@
         "Structured routine to support dopamine regulation",
         "Seek therapy for reward-seeking behaviors"
       ]
-    }
+    },
+    "population_studied": ["European", "East Asian", "Global"],
+    "representation_note": "DEMO DATA — DRD2 Taq1A has been studied across European and East Asian cohorts, with some variation in allele frequency. Psychiatric GWAS representation in non-European populations remains limited. Replace with verified citation."
   },
   {
     "rsid": "rs5082",
@@ -382,7 +404,9 @@
       "lifestyle": [
         "Read food labels carefully for saturated fat content"
       ]
-    }
+    },
+    "population_studied": ["European", "Global"],
+    "representation_note": "DEMO DATA — APOA2 rs5082 gene-diet interaction studies have been conducted primarily in European-descent cohorts. Broader population representation is limited. Replace with verified citation."
   },
   {
     "rsid": "rs9271366",
@@ -414,7 +438,9 @@
         "Reduce environmental triggers: stress, infections",
         "Probiotics for gut microbiome support"
       ]
-    }
+    },
+    "population_studied": ["European", "Global"],
+    "representation_note": "DEMO DATA — HLA-DQA1 autoimmune risk alleles are most extensively characterised in European populations. HLA haplotype distributions differ significantly across ancestries. Replace with verified citation."
   },
   {
     "rsid": "rs2075650",
@@ -445,7 +471,9 @@
         "Social engagement and continued learning",
         "Neuroprotective sleep hygiene"
       ]
-    }
+    },
+    "population_studied": ["European", "Global"],
+    "representation_note": "DEMO DATA — TOMM40 poly-T studies on Alzheimer's age of onset have been conducted predominantly in European-descent cohorts. Multi-ethnic replication is limited. Replace with verified citation."
   },
   {
     "rsid": "rs3135506",
@@ -475,7 +503,9 @@
         "Avoid high-fat meals",
         "Weight management"
       ]
-    }
+    },
+    "population_studied": ["European", "Global"],
+    "representation_note": "DEMO DATA — APOC3 rs3135506 triglyceride association studies are predominantly in European cohorts. Effect size in other populations not characterised here. Replace with verified citation."
   },
   {
     "rsid": "rs328",
@@ -504,7 +534,9 @@
       "lifestyle": [
         "Healthy body weight maintenance"
       ]
-    }
+    },
+    "population_studied": ["European", "Global"],
+    "representation_note": "DEMO DATA — LPL rs328 (S447X) has been studied primarily in European populations. The protective effect on triglyceride levels may differ in other ancestries. Replace with verified citation."
   },
   {
     "rsid": "rs1800629",
@@ -539,7 +571,9 @@
         "Quality sleep reduces inflammatory markers",
         "Cold exposure therapy may help"
       ]
-    }
+    },
+    "population_studied": ["European", "East Asian", "Global"],
+    "representation_note": "DEMO DATA — TNF rs1800629 (-308G>A) has been studied across European and East Asian populations in inflammatory disease contexts. Effect sizes and allele frequency vary by ancestry. Replace with verified citation."
   },
   {
     "rsid": "rs4149056",
@@ -567,7 +601,9 @@
         "Inform your doctor about this variant before any statin prescription",
         "Consider alternative cholesterol therapies"
       ]
-    }
+    },
+    "population_studied": ["European", "Global"],
+    "representation_note": "DEMO DATA — SLCO1B1 rs4149056 (*5 allele) pharmacogenomic studies have been conducted in European and some Asian cohorts. Clinical guidelines (e.g. CPIC) note cross-population applicability. No specific population frequencies included. Replace with verified citation."
   },
   {
     "rsid": "rs1042714",
@@ -599,7 +635,9 @@
         "Avoid air pollutants and smoke",
         "Carry rescue inhaler if prescribed"
       ]
-    }
+    },
+    "population_studied": ["European", "Global"],
+    "representation_note": "DEMO DATA — ADRB2 rs1042714 (Gln27Glu) has been studied in European and some Asian cohorts for asthma and obesity phenotypes. Cross-population frequency and effect data are not included. Replace with verified citation."
   },
   {
     "rsid": "rs4680",
@@ -630,7 +668,9 @@
         "Mindfulness meditation shown to be especially effective",
         "Creative outlets for dopamine regulation"
       ]
-    }
+    },
+    "population_studied": ["European", "East Asian", "Global"],
+    "representation_note": "DEMO DATA — COMT Val158Met has been studied across European and East Asian populations. Allele frequencies and phenotypic associations (pain, cognition, psychiatric) have some cross-population variability. No frequency data included. Replace with verified citation."
   },
   {
     "rsid": "rs433456",
@@ -676,7 +716,9 @@
         "Manage stress through techniques like meditation, deep breathing, or yoga",
         "Get enough sleep, aiming for 7-8 hours per night, to help regulate your immune system and overall health"
       ]
-    }
+    },
+    "population_studied": ["Global"],
+    "representation_note": "DEMO DATA — SLC22A4 rs433456 population representation data is not available for this entry. Replace with verified citation."
   },
   {
     "rsid": "rs10549278",
@@ -722,7 +764,9 @@
         "Get enough sleep, aiming for 7-9 hours per night, to help regulate stress and reduce cancer risk",
         "Manage stress through techniques like meditation, yoga, or deep breathing exercises"
       ]
-    }
+    },
+    "population_studied": ["European", "Global"],
+    "representation_note": "DEMO DATA — CDKN2A melanoma risk studies have been conducted predominantly in European-descent and fair-skinned populations. Representation in other ancestries is limited. Replace with verified citation."
   },
   {
     "rsid": "rs4477212",
@@ -767,7 +811,9 @@
         "Limit your intake of alcohol and avoid binge drinking",
         "Stay up-to-date on recommended vaccinations to prevent infections"
       ]
-    }
+    },
+    "population_studied": ["European", "Global"],
+    "representation_note": "DEMO DATA — IL23R IBD association studies have been conducted largely in European-descent cohorts. Replication in South Asian and East Asian populations exists but is less comprehensive. Replace with verified citation."
   },
   {
     "rsid": "rs2277212",
@@ -813,7 +859,9 @@
         "Avoid exposure to toxins, such as pesticides or heavy metals, which can trigger autoimmune symptoms",
         "Stay connected with friends and family to build a support network and reduce stress"
       ]
-    }
+    },
+    "population_studied": ["European", "Global"],
+    "representation_note": "DEMO DATA — IL23R rs2277212 autoimmune associations have been studied primarily in European IBD cohorts. Broader multi-ethnic data are limited. Replace with verified citation."
   },
   {
     "rsid": "rs3094315",
@@ -858,7 +906,9 @@
         "Use gentle hair care products and avoid excessive washing, which can strip hair of its natural oils",
         "Consider reducing your exposure to environmental toxins, such as those found in pollution and certain chemicals, which can contribute to hair loss"
       ]
-    }
+    },
+    "population_studied": ["East Asian", "European", "Global"],
+    "representation_note": "DEMO DATA — FGF5 rs3094315 hair loss associations have been reported in both East Asian and European GWAS studies. Cross-population replication exists but effect sizes and allele frequencies differ. Replace with verified citation."
   },
   {
     "rsid": "rs2277213",
@@ -890,6 +940,8 @@
         "Maintain consistent sleep hygiene (7.5+ hours)",
         "Avoid environmental toxins and smoking"
       ]
-    }
+    },
+    "population_studied": ["Global"],
+    "representation_note": "DEMO DATA — rs2277213 was auto-resolved by the GeneShield AI backend via Ensembl lookup; no specific population study data is available for this entry. The gene attribution to MTHFR on chromosome 16 is heuristic, not verified. Replace with verified citation."
   }
 ]

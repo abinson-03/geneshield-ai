@@ -1,6 +1,6 @@
 # GeneShield AI 🧬
 ### A Microservice-Driven Genetic Risk Analysis and Preventive Healthcare Platform
-**EvaSync Team Project | Developed for Techy Spot Hackathon 2026-2027**
+**EvaSync Team Project**
 
 ---
 
@@ -100,4 +100,4 @@ GeneShield AI is built for **educational and hackathon presentation purposes onl
 
 ---
 
-*Built with ❤️ by EvaSync Team for Techy Spot Hackathon*
+*Built with ❤️ by EvaSync Team*

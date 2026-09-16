@@ -2,6 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
+const connectDB = require('./config/db');
+const mongoose = require('mongoose');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -13,6 +16,18 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Serverless DB connection middleware
+app.use(async (req, res, next) => {
+  if (process.env.MONGODB_URI) {
+    try {
+      await connectDB();
+    } catch (err) {
+      console.warn('[MongoDB] Serverless connection warning:', err.message);
+    }
+  }
+  next();
+});
 
 // Request logger middleware
 app.use((req, res, next) => {
@@ -30,6 +45,7 @@ app.use('/api/rsid', require('./routes/rsid'));
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'GeneShield AI Backend is running',
+    database: mongoose.connection.readyState === 1 ? 'connected (MongoDB Atlas)' : 'local / fallback',
     openAI: !!process.env.OPENAI_API_KEY ? 'configured' : 'not configured (using rule-based fallback)',
     timestamp: new Date().toISOString()
   });
@@ -41,9 +57,14 @@ app.use((err, req, res, next) => {
 });
 
 if (!process.env.VERCEL) {
+  if (process.env.MONGODB_URI) {
+    connectDB().catch(err => console.warn('[MongoDB] Startup connection error:', err.message));
+  }
   app.listen(PORT, () => {
     const aiStatus = process.env.OPENAI_API_KEY ? '✅ OpenAI configured' : '⚠  No OpenAI key — using rule-based fallback';
+    const dbStatus = process.env.MONGODB_URI ? 'Connecting to MongoDB Atlas...' : '⚠  No MONGODB_URI (using flat-file fallback)';
     console.log(`\n🧬 GeneShield AI Backend  →  http://localhost:${PORT}`);
+    console.log(`💾 Database              →  ${dbStatus}`);
     console.log(`🤖 AI Status             →  ${aiStatus}`);
     console.log(`🔑 Admin Login           →  admin@geneshield.ai / Admin@1234\n`);
   });

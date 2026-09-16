@@ -1,7 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+const mongoose = require('mongoose');
+const Analysis = require('../models/Analysis');
 const { generateAIReport } = require('../services/aiService');
+const { computeConfidenceScore } = require('../services/confidenceService');
+
+const isMongoActive = () => !!process.env.MONGODB_URI && mongoose.connection.readyState === 1;
 
 const getDatabasePath = (filename) => {
   const localPath = path.join(__dirname, '../data', filename);
@@ -138,7 +143,10 @@ exports.getRSID = async (req, res) => {
   const record = db.find(r => r.rsid.toLowerCase() === rsid);
 
   if (record) {
-    return res.json(record);
+    return res.json({
+      ...record,
+      confidenceScore: computeConfidenceScore(record)
+    });
   }
 
   // Real-time verification with international dbSNP Ensembl database
@@ -218,7 +226,12 @@ exports.getAIReport = async (req, res) => {
 
     let variantData;
     if (record) {
-      variantData = { ...record, userGenotype: genotype || 'Not specified', isUnlisted: false };
+      variantData = {
+        ...record,
+        confidenceScore: computeConfidenceScore(record),
+        userGenotype: genotype || 'Not specified',
+        isUnlisted: false
+      };
     } else {
       // Unlisted but already validated
       variantData = {
@@ -266,7 +279,10 @@ exports.getAIReport = async (req, res) => {
         exercise: aiReport.exercisePlan || [],
         screening: aiReport.screeningSchedule || [],
         lifestyle: aiReport.lifestyleChanges || []
-      }
+      },
+      population_studied: record ? record.population_studied : [],
+      representation_note: record ? record.representation_note : 'DEMO DATA — This variant was resolved by AI and has no curated population study data.',
+      confidenceScore: record ? computeConfidenceScore(record) : 'Low'
     };
 
     // CACHE PERSISTENCE: Save new variants permanently in JSON DB to ensure zero future variance
@@ -290,6 +306,8 @@ exports.getAIReport = async (req, res) => {
         totalVariantsScanned: 1,
         matchedVariants: 1,
         overallRiskScore: overallScore,
+        overallConfidenceIndex: responseVariant.confidenceScore === 'High' ? 100
+          : responseVariant.confidenceScore === 'Moderate' ? 50 : 0,
         riskBreakdown: {
           high: level === 'HIGH' ? 1 : 0,
           medium: level === 'MEDIUM' ? 1 : 0,
@@ -306,7 +324,10 @@ exports.getAIReport = async (req, res) => {
             risk_score: responseVariant.risk_score,
             diseases: responseVariant.diseases,
             description: responseVariant.description,
-            advice: responseVariant.advice
+            advice: responseVariant.advice,
+            population_studied: responseVariant.population_studied,
+            representation_note: responseVariant.representation_note,
+            confidenceScore: responseVariant.confidenceScore
           }
         ],
         diseaseRisks: responseVariant.diseases.map(d => ({
@@ -334,8 +355,12 @@ exports.getAIReport = async (req, res) => {
         }
       };
       
-      analyses.push(analysisRecord);
-      writeAnalyses(analyses);
+      if (isMongoActive()) {
+        await Analysis.create(analysisRecord);
+      } else {
+        analyses.push(analysisRecord);
+        writeAnalyses(analyses);
+      }
     }
 
     res.json({

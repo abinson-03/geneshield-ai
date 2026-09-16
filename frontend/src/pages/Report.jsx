@@ -134,6 +134,7 @@ export default function Report() {
             { label: 'Risk Level', value: getRiskLabel(data.overallRiskScore), color: getRiskColor(data.overallRiskScore) },
             { label: 'Variants Scanned', value: data.totalVariantsScanned, color: '#00d4ff' },
             { label: 'Matched Variants', value: data.matchedVariants, color: '#7c3aed' },
+            { label: 'Population Confidence', value: data.overallConfidenceIndex != null ? `${data.overallConfidenceIndex}/100` : '—', color: data.overallConfidenceIndex >= 67 ? '#69f0ae' : data.overallConfidenceIndex >= 34 ? '#ffb74d' : '#ff6b6b' },
           ].map((c, i) => (
             <div key={i} style={{ background: 'rgba(6,20,36,0.9)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '14px', padding: '1.25rem', animation: `fadeInUp 0.4s ease ${i * 0.06}s both` }}>
               <div style={{ fontSize: '0.72rem', color: '#4a5568', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.4rem' }}>{c.label}</div>

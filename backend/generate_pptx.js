@@ -45,7 +45,7 @@ slide1.addText([
   { text: "GENESHIELD AI\n", options: { fontSize: 48, bold: true, color: '00F2FF', fontFace: 'Segoe UI' } },
   { text: "Genomic Security Redefined\n\n", options: { fontSize: 20, bold: true, color: 'FF24E4', fontFace: 'Segoe UI' } },
   { text: "AI-Powered Threat Analysis & Privacy Protection for Personal DNA Assets\n\n\n\n", options: { fontSize: 14, color: '8899AA', fontFace: 'Segoe UI' } },
-  { text: "Developed by: EvaSync Team\nFor Techy Spot Hackathon 2026-2027", options: { fontSize: 13, color: 'FFFFFF', bold: true, fontFace: 'Segoe UI' } }
+  { text: "Developed by: EvaSync Team", options: { fontSize: 13, color: 'FFFFFF', bold: true, fontFace: 'Segoe UI' } }
 ], {
   x: 5.8, y: 1.8, w: 6.8, h: 4.2,
   valign: 'middle'
